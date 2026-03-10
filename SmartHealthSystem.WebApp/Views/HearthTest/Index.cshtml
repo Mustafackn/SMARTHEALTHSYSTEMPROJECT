@@ -1,0 +1,479 @@
+﻿@using SmartHealthSystem.Application.DTOs.User
+
+@model List<GetAllUsersDto>
+
+
+
+@{
+
+    ViewData["Title"] = "Kalp Sağlığı Analizi";
+
+}
+
+
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+
+
+<style>
+
+    .analysis-container {
+        background: #f4f7f6;
+        padding: 2rem;
+        min-height: 100vh;
+    }
+
+
+
+    .card-custom {
+        border: none;
+        border-radius: 15px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    }
+
+
+
+    .section-title {
+        color: #2c3e50;
+        font-weight: 700;
+        border-bottom: 2px solid #e9ecef;
+        padding-bottom: 10px;
+        margin-bottom: 20px;
+    }
+
+
+
+    .form-label {
+        font-weight: 600;
+        color: #555;
+    }
+
+
+
+    .btn-analyze {
+        background: #4e73df;
+        color: white;
+        padding: 12px;
+        font-weight: 700;
+        border-radius: 10px;
+        transition: 0.3s;
+        width: 100%;
+        border: none;
+    }
+
+
+
+        .btn-analyze:hover {
+            background: #224abe;
+            transform: translateY(-2px);
+        }
+
+
+
+    /* Sonuç Paneli */
+
+    #resultPanel {
+        display: none;
+        margin-top: 30px;
+        border-radius: 15px;
+        overflow: hidden;
+    }
+
+
+
+    .result-success {
+        border-left: 8px solid #1cc88a;
+        background: #f8fff9;
+    }
+
+
+
+    .result-danger {
+        border-left: 8px solid #e74a3b;
+        background: #fff8f8;
+    }
+
+</style>
+
+
+
+<div class="analysis-container">
+
+    <div class="container">
+
+        <div class="card card-custom p-4 p-lg-5">
+
+            <h2 class="text-center mb-4"><i class="fas fa-heartbeat text-danger"></i> Kalp Analiz Testi</h2>
+
+
+
+            <form id="analysisForm">
+
+                <div class="section-title"><i class="fas fa-user-circle"></i> 1. Hasta Seçimi</div>
+
+                <div class="mb-4">
+
+                    <select class="form-select form-select-lg" name="PatientId" required>
+
+                        <option value="">-- Analiz Edilecek Hastayı Seçiniz --</option>
+
+                        @foreach (var user in Model)
+
+                        {
+
+                            <option value="@user.Id">@user.FirstName @user.LastName (@user.Email)</option>
+
+                        }
+
+                    </select>
+
+                </div>
+
+
+
+                <div class="section-title"><i class="fas fa-file-medical-alt"></i> 2. Klinik Veriler</div>
+
+                <div class="row g-3 mb-4">
+
+                    <div class="col-md-3">
+
+                        <label class="form-label">Yaş</label>
+
+                        <input type="number" name="Age" class="form-control" required placeholder="40">
+
+                    </div>
+
+                    <div class="col-md-3">
+
+                        <label class="form-label">Cinsiyet</label>
+
+                        <select class="form-select" name="Sex">
+
+                            <option value="1">Erkek</option>
+
+                            <option value="0">Kadın</option>
+
+                        </select>
+
+                    </div>
+
+                    <div class="col-md-3">
+
+                        <label class="form-label">Kan Basıncı</label>
+
+                        <input type="number" name="Trestbps" class="form-control" required placeholder="150">
+
+                    </div>
+
+                    <div class="col-md-3">
+
+                        <label class="form-label">Kolesterol</label>
+
+                        <input type="number" name="Chol" class="form-control" required placeholder="230">
+
+                    </div>
+
+                </div>
+
+
+
+                <div class="row g-3 mb-4">
+
+                    <div class="col-md-4">
+
+                        <label class="form-label">Göğüs Ağrısı Tipi</label>
+
+                        <select class="form-select" name="Cp">
+
+                            <option value="0">Tipik Anjin</option>
+
+                            <option value="1">Atipik Anjin</option>
+
+                            <option value="2">Anjin Olmayan</option>
+
+                            <option value="3">Asemptomatik</option>
+
+                        </select>
+
+                    </div>
+
+                    <div class="col-md-4">
+
+                        <label class="form-label">Maks. Kalp Hızı</label>
+
+                        <input type="number" name="Thalach" class="form-control" required placeholder="140">
+
+                    </div>
+
+                    <div class="col-md-4">
+
+                        <label class="form-label">Açlık Kan Şekeri > 120</label>
+
+                        <select class="form-select" name="Fbs">
+
+                            <option value="0">Hayır</option>
+
+                            <option value="1">Evet</option>
+
+                        </select>
+
+                    </div>
+
+                </div>
+
+
+
+                <div class="section-title"><i class="fas fa-microscope"></i> 3. İleri Tetkikler</div>
+
+                <div class="row g-3 mb-5">
+
+                    <div class="col-md-3">
+
+                        <label class="form-label">Egzersiz Anjini</label>
+
+                        <select class="form-select" name="Exang">
+
+                            <option value="0">Hayır</option>
+
+                            <option value="1">Evet</option>
+
+                        </select>
+
+                    </div>
+
+                    <div class="col-md-3">
+
+                        <label class="form-label">ST Depresyonu (Oldpeak)</label>
+
+                        <input type="number" step="0.1" name="Oldpeak" class="form-control" required placeholder="2.5">
+
+                    </div>
+
+                    <div class="col-md-3">
+
+                        <label class="form-label">Tıkalı Damar (Ca)</label>
+
+                        <input type="number" name="Ca" class="form-control" min="0" max="4" required value="0">
+
+                    </div>
+
+                    <div class="col-md-3">
+
+                        <label class="form-label">Talasemi</label>
+
+                        <select class="form-select" name="Thal">
+
+                            <option value="1">Normal</option>
+
+                            <option value="2">Sabit Defekt</option>
+
+                            <option value="3">Geri Dönüşümlü</option>
+
+                        </select>
+
+                    </div>
+
+                </div>
+
+
+
+                <input type="hidden" name="Restecg" value="0">
+
+                <input type="hidden" name="Slope" value="1">
+
+
+
+                <button type="submit" class="btn btn-analyze">
+
+                    <i class="fas fa-play-circle me-2"></i> ANALİZİ BAŞLAT
+
+                </button>
+
+            </form>
+
+
+
+            <div id="resultPanel" class="card shadow-sm p-4">
+
+                <div class="row text-center align-items-center">
+
+                    <div class="col-md-4 border-end">
+
+                        <h6 class="text-muted fw-bold">HASTALIK RİSKİ</h6>
+
+                        <h1 id="resRisk" class="display-4 fw-bold">%0.0</h1>
+
+                        <span id="resBadge" class="badge p-2 px-3">Belirlenmedi</span>
+
+                    </div>
+
+                    <div class="col-md-4 border-end">
+
+                        <h6 class="text-muted fw-bold">SAĞLIK SKORU</h6>
+
+                        <h1 id="resScore" class="display-4 fw-bold">0</h1>
+
+                        <div class="progress mt-2" style="height: 8px;">
+
+                            <div id="resProgress" class="progress-bar" role="progressbar"></div>
+
+                        </div>
+
+                    </div>
+
+                    <div class="col-md-4">
+
+                        <h6 class="text-muted fw-bold">DOKTOR ÖNERİSİ</h6>
+
+                        <p id="resAdvice" class="small mt-2 text-dark"></p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+
+    document.getElementById('analysisForm').addEventListener('submit', async function (e) {
+
+        e.preventDefault();
+
+
+
+        const formData = new FormData(this);
+
+        const finalRequest = {};
+
+
+
+        formData.forEach((value, key) => {
+
+            if (key === "Oldpeak") finalRequest[key] = parseFloat(value.toString().replace(',', '.'));
+
+            else if (key === "PatientId") finalRequest[key] = value;
+
+            else finalRequest[key] = parseInt(value);
+
+        });
+
+
+
+        Swal.fire({ title: 'Analiz Yapılıyor...', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); } });
+
+
+
+        try {
+
+            const response = await fetch('/HearthTest/CreateAnalysis', {
+
+                method: 'POST',
+
+                headers: { 'Content-Type': 'application/json' },
+
+                body: JSON.stringify(finalRequest)
+
+            });
+
+
+
+            if (response.ok) {
+
+                const result = await response.json();
+
+                console.log("Gelen Veri:", result); // Tarayıcı konsolundan kontrol için
+
+
+
+                // EŞLEŞTİRME DÜZELTMESİ: API'den gelen PascalCase değerleri kontrol ediyoruz
+
+                const risk = result.riskPercentage !== undefined ? result.riskPercentage : (result.RiskPercentage || 0);
+
+                const score = result.healthScore !== undefined ? result.healthScore : (result.HealthScore || 0);
+
+                const advice = result.recommendations || result.Recommendations || "Öneri alınamadı.";
+
+
+
+                // UI Güncelleme
+
+                document.getElementById('resRisk').innerText = '%' + risk.toFixed(1);
+
+                document.getElementById('resScore').innerText = score;
+
+                document.getElementById('resAdvice').innerText = advice;
+
+                document.getElementById('resProgress').style.width = score + "%";
+
+
+
+                const panel = document.getElementById('resultPanel');
+
+                const badge = document.getElementById('resBadge');
+
+                const riskTxt = document.getElementById('resRisk');
+
+
+
+                if (risk > 50) {
+
+                    panel.className = "card shadow-sm p-4 result-danger animate__animated animate__shakeX";
+
+                    badge.className = "badge bg-danger p-2 px-3";
+
+                    badge.innerText = "YÜKSEK RİSK";
+
+                    riskTxt.className = "display-4 fw-bold text-danger";
+
+                    document.getElementById('resProgress').className = "progress-bar bg-danger";
+
+                } else {
+
+                    panel.className = "card shadow-sm p-4 result-success animate__animated animate__fadeIn";
+
+                    badge.className = "badge bg-success p-2 px-3";
+
+                    badge.innerText = "DÜŞÜK RİSK";
+
+                    riskTxt.className = "display-4 fw-bold text-success";
+
+                    document.getElementById('resProgress').className = "progress-bar bg-success";
+
+                }
+
+
+
+                panel.style.display = 'block';
+
+                panel.scrollIntoView({ behavior: 'smooth' });
+
+                Swal.close();
+
+            } else {
+
+                Swal.fire('Hata', 'API yanıt vermedi.', 'error');
+
+            }
+
+        } catch (error) {
+
+            Swal.fire('Hata', 'Bağlantı hatası.', 'error');
+
+        }
+
+    });
+
+</script>

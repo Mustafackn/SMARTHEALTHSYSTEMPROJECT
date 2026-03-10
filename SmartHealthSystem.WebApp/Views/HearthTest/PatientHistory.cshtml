@@ -1,0 +1,142 @@
+﻿@{
+    var patientId = ViewBag.PatientId;
+}
+
+<div class="dashboard-container animate__animated animate__fadeIn">
+    <div class="d-flex align-items-center mb-4">
+        <a href="/HearthTest/ListResult" class="btn btn-outline-primary rounded-pill me-3">
+            <i class="fas fa-arrow-left"></i> Geri Dön
+        </a>
+        <h3 class="m-0 font-weight-bold">Hasta Analiz Düzenleme <small class="text-muted">(ID: @patientId)</small></h3>
+    </div>
+
+    <div id="noDataAlert" class="alert alert-info d-none">Bu hastaya ait geçmiş analiz kaydı bulunamadı.</div>
+
+    <div class="row" id="analysisCards">
+    </div>
+</div>
+
+<style>
+    .analysis-card {
+        background: white;
+        border: none;
+        border-radius: 15px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+        margin-bottom: 2rem;
+    }
+
+    .param-box {
+        background: #f8faff;
+        padding: 12px;
+        border-radius: 10px;
+        margin-bottom: 10px;
+        border: 1px solid #eee;
+    }
+
+    .param-label {
+        font-size: 0.7rem;
+        color: #a3aed0;
+        font-weight: 700;
+        text-transform: uppercase;
+        margin-bottom: 5px;
+    }
+
+    .param-input {
+        width: 100%;
+        border: none;
+        background: transparent;
+        color: #2b3674;
+        font-weight: 600;
+        font-size: 1rem;
+        outline: none;
+        padding: 0;
+        border-bottom: 1px solid transparent;
+        transition: 0.3s;
+    }
+
+        .param-input:focus {
+            border-bottom: 1px solid #4361ee;
+        }
+
+    .btn-update {
+        width: 100%;
+        border-radius: 10px;
+        font-weight: 700;
+        padding: 10px;
+        margin-top: 10px;
+    }
+</style>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const patientId = "@patientId";
+
+        fetch(`/HearthTest/get-analyses/${patientId}`)
+            .then(res => {
+                if(!res.ok) throw new Error("Veri bulunamadı");
+                return res.json();
+            })
+            .then(data => {
+                const container = document.getElementById('analysisCards');
+                data.forEach(item => {
+                    container.innerHTML += `
+                        <div class="col-md-6 col-lg-4">
+                            <form class="card analysis-card" onsubmit="updateAnalysis(event, ${item.id})">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between mb-3 border-bottom pb-2">
+                                        <span class="fw-bold text-primary">Kayıt #${item.id}</span>
+                                        <span class="text-muted small">${new Date(item.createdDate).toLocaleDateString()}</span>
+                                    </div>
+                                    <div class="row">
+                                        ${renderInput("Yaş", "age", item.age)}
+                                        ${renderInput("Tansiyon", "trestbps", item.trestbps)}
+                                        ${renderInput("Kolesterol", "chol", item.chol)}
+                                        ${renderInput("ST Depresyon", "oldpeak", item.oldpeak)}
+                                        ${renderInput("Maks. Kalp Hızı", "thalach", item.thalach)}
+                                        ${renderInput("Kan Şekeri", "fbs", item.fbs)}
+                                    </div>
+                                    <button type="submit" class="btn btn-primary btn-update">
+                                        <i class="fas fa-save me-2"></i>Değişiklikleri Kaydet
+                                    </button>
+                                </div>
+                            </form>
+                        </div>`;
+                });
+            })
+            .catch(err => {
+                document.getElementById('noDataAlert').classList.remove('d-none');
+            });
+    });
+
+    function renderInput(label, name, value) {
+        return `
+            <div class="col-6">
+                <div class="param-box">
+                    <div class="param-label">${label}</div>
+                    <input type="text" name="${name}" class="param-input" value="${value}">
+                </div>
+            </div>`;
+    }
+
+    // GÜNCELLEME FONKSİYONU
+    async function updateAnalysis(event, id) {
+        event.preventDefault();
+        const formData = new FormData(event.target);
+        const data = Object.fromEntries(formData.entries());
+        data.id = id; // Hangi kaydın güncelleneceği
+
+        console.log("Güncellenecek Veri:", data);
+
+        // Burada Controller'da bir Update metodu yazman gerekecek (Örn: UpdateTechnicalData)
+        /*
+        const response = await fetch('/HearthTest/UpdateAnalysis', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        });
+
+        if(response.ok) alert("Başarıyla güncellendi!");
+        */
+        alert("ID: " + id + " için güncelleme isteği hazır! (Controller'da Update metodunu eklemelisiniz)");
+    }
+</script>

@@ -1,0 +1,349 @@
+﻿@model SmartHealthSystem.Application.DTOs.KidneyTestData.UpdateKidneyTestDataDto
+
+@{
+    ViewData["Title"] = "Böbrek Analizi Güncelleme";
+}
+
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+    :root {
+        --primary: #0ea5e9;
+        --primary-dark: #0284c7;
+        --accent: #38bdf8;
+        --bg-body: #f8fafc;
+        --text-main: #1e293b;
+        --glass: rgba(255, 255, 255, 0.95);
+    }
+
+    body {
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        background: radial-gradient(circle at top right, #e0f2fe, #f8fafc);
+        color: var(--text-main);
+        min-height: 100vh;
+    }
+
+    /* Ana Kart Tasarımı */
+    .main-card {
+        background: var(--glass);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(14, 165, 233, 0.1);
+        border-radius: 32px;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.05);
+        overflow: hidden;
+        transition: transform 0.3s ease;
+    }
+
+    /* Header Alanı */
+    .header-gradient {
+        background: linear-gradient(135deg, #0f172a 0%, #0ea5e9 100%);
+        padding: 50px 40px;
+        position: relative;
+    }
+
+    .header-icon {
+        width: 70px;
+        height: 70px;
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(5px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 20px;
+        font-size: 2rem;
+        color: white;
+    }
+
+    /* Input Grupları */
+    .input-group-custom {
+        background: white;
+        border: 2px solid #f1f5f9;
+        border-radius: 20px;
+        padding: 15px 20px;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        height: 100%;
+    }
+
+        .input-group-custom:hover {
+            border-color: var(--accent);
+            background: #f0f9ff;
+        }
+
+        .input-group-custom:focus-within {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(14, 165, 233, 0.15);
+            transform: translateY(-2px);
+        }
+
+    .label-mini {
+        font-size: 0.65rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        color: #64748b;
+        margin-bottom: 5px;
+        display: block;
+    }
+
+    .form-control-naked {
+        border: none;
+        background: transparent;
+        font-size: 1.15rem;
+        font-weight: 700;
+        color: var(--text-main);
+        width: 100%;
+        padding: 0;
+    }
+
+        .form-control-naked:focus {
+            outline: none;
+        }
+
+    /* Modern Butonlar */
+    .btn-action-back {
+        background: white;
+        color: #64748b;
+        border: 2px solid #e2e8f0;
+        padding: 14px 28px;
+        border-radius: 18px;
+        font-weight: 700;
+        transition: 0.3s;
+        text-decoration: none !important;
+    }
+
+        .btn-action-back:hover {
+            background: #f1f5f9;
+            color: #1e293b;
+        }
+
+    .btn-action-save {
+        background: var(--primary);
+        color: white;
+        border: none;
+        padding: 16px 40px;
+        border-radius: 18px;
+        font-weight: 700;
+        font-size: 1rem;
+        box-shadow: 0 10px 25px -5px rgba(14, 165, 233, 0.4);
+        transition: all 0.3s;
+        position: relative;
+        overflow: hidden;
+    }
+
+        .btn-action-save:hover {
+            background: var(--primary-dark);
+            box-shadow: 0 15px 30px -5px rgba(14, 165, 233, 0.6);
+            transform: translateY(-3px);
+        }
+
+        .btn-action-save::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: rgba(255,255,255,0.1);
+            transform: rotate(45deg);
+            transition: 0.5s;
+        }
+
+        .btn-action-save:hover::after {
+            left: 120%;
+        }
+
+    /* Section Başlıkları */
+    .badge-section {
+        background: #e0f2fe;
+        color: #0369a1;
+        padding: 8px 16px;
+        border-radius: 12px;
+        font-size: 0.8rem;
+        font-weight: 700;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 25px;
+    }
+</style>
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-xl-10">
+            <div class="main-card">
+                <div class="header-gradient d-md-flex align-items-center justify-content-between">
+                    <div class="d-flex align-items-center">
+                        <div class="header-icon mr-4">
+                            <i class="fas fa-microscope"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-white font-weight-bold mb-1">Akıllı Böbrek Analizi</h2>
+                            <p class="text-white-50 mb-0">AI destekli klinik veri güncelleme paneli</p>
+                        </div>
+                    </div>
+                    <div class="text-right d-none d-md-block">
+                        <span class="badge badge-light px-3 py-2" style="border-radius: 10px; opacity: 0.8;">
+                            <i class="fas fa-shield-alt text-primary mr-1"></i> Veri Güvenliği Aktif
+                        </span>
+                    </div>
+                </div>
+
+                <div class="p-4 p-lg-5">
+                    <form id="kidneyUpdateForm">
+                        <input type="hidden" id="kidneyId" value="@Model.Id" />
+
+                        <div class="badge-section"><i class="fas fa-heartbeat"></i> VİTAL BULGULAR</div>
+                        <div class="row mb-5">
+                            <div class="col-md-3 mb-4">
+                                <div class="input-group-custom">
+                                    <label class="label-mini">YAŞ</label>
+                                    <input type="number" class="form-control-naked" id="age" value="@Model.Age">
+                                </div>
+                            </div>
+                            <div class="col-md-3 mb-4">
+                                <div class="input-group-custom">
+                                    <label class="label-mini">KAN BASINCI (BP)</label>
+                                    <input type="number" class="form-control-naked" id="bp" value="@Model.Bp">
+                                </div>
+                            </div>
+                            <div class="col-md-3 mb-4">
+                                <div class="input-group-custom">
+                                    <label class="label-mini">ÖZGÜL AĞIRLIK (SG)</label>
+                                    <input type="text" class="form-control-naked" id="sg" value="@Model.Sg.ToString().Replace(",", ".")">
+                                </div>
+                            </div>
+                            <div class="col-md-3 mb-4">
+                                <div class="input-group-custom">
+                                    <label class="label-mini">ALBÜMİN (AL)</label>
+                                    <input type="number" class="form-control-naked" id="al" value="@Model.Al">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="badge-section"><i class="fas fa-vial"></i> LABORATUVAR ANALİZİ</div>
+                        <div class="row mb-5">
+                            <div class="col-md-3 mb-4">
+                                <div class="input-group-custom">
+                                    <label class="label-mini">ŞEKER (SU)</label>
+                                    <input type="number" class="form-control-naked" id="su" value="@Model.Su">
+                                </div>
+                            </div>
+                            <div class="col-md-3 mb-4">
+                                <div class="input-group-custom">
+                                    <label class="label-mini">GLUKOZ (BGR)</label>
+                                    <input type="number" class="form-control-naked" id="bgr" value="@Model.Bgr">
+                                </div>
+                            </div>
+                            <div class="col-md-3 mb-4">
+                                <div class="input-group-custom">
+                                    <label class="label-mini">ÜRE (BU)</label>
+                                    <input type="number" class="form-control-naked" id="bu" value="@Model.Bu">
+                                </div>
+                            </div>
+                            <div class="col-md-3 mb-4">
+                                <div class="input-group-custom">
+                                    <label class="label-mini">KREATİNİN (SC)</label>
+                                    <input type="text" class="form-control-naked" id="sc" value="@Model.Sc.ToString().Replace(",", ".")">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="badge-section"><i class="fas fa-dna"></i> ELEKTROLİT VE HEMOGRAM</div>
+                        <div class="row mb-5">
+                            <div class="col-md-4 mb-4">
+                                <div class="input-group-custom">
+                                    <label class="label-mini">SODYUM (SOD)</label>
+                                    <input type="number" class="form-control-naked" id="sod" value="@Model.Sod">
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-4">
+                                <div class="input-group-custom">
+                                    <label class="label-mini">POTASYUM (POT)</label>
+                                    <input type="text" class="form-control-naked" id="pot" value="@Model.Pot.ToString().Replace(",", ".")">
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-4">
+                                <div class="input-group-custom">
+                                    <label class="label-mini">HEMOGLOBİN (HEMO)</label>
+                                    <input type="text" class="form-control-naked" id="hemo" value="@Model.Hemo.ToString().Replace(",", ".")">
+                                </div>
+                            </div>
+                        </div>
+
+                        <input type="hidden" id="rbc" value="@Model.Rbc" />
+                        <input type="hidden" id="pc" value="@Model.Pc" />
+                        <input type="hidden" id="pcc" value="@Model.Pcc" />
+                        <input type="hidden" id="ba" value="@Model.Ba" />
+
+                        <div class="d-flex justify-content-between align-items-center mt-4 pt-4 border-top">
+                            <a href="javascript:history.back()" class="btn-action-back">
+                                <i class="fas fa-chevron-left mr-2"></i> Vazgeç
+                            </a>
+                            <button type="button" onclick="performUpdate()" class="btn-action-save">
+                                <i class="fas fa-bolt mr-2"></i> ANALİZİ YENİLE
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    async function performUpdate() {
+        const dto = {
+            Id: document.getElementById('kidneyId').value,
+            Age: parseInt(document.getElementById('age').value),
+            Bp: parseInt(document.getElementById('bp').value),
+            Sg: parseFloat(document.getElementById('sg').value.replace(',', '.')),
+            Al: parseInt(document.getElementById('al').value),
+            Su: parseInt(document.getElementById('su').value),
+            Rbc: document.getElementById('rbc').value,
+            Pc: document.getElementById('pc').value,
+            Pcc: document.getElementById('pcc').value,
+            Ba: document.getElementById('ba').value,
+            Bgr: parseInt(document.getElementById('bgr').value),
+            Bu: parseInt(document.getElementById('bu').value),
+            Sc: parseFloat(document.getElementById('sc').value.replace(',', '.')),
+            Sod: parseInt(document.getElementById('sod').value),
+            Pot: parseFloat(document.getElementById('pot').value.replace(',', '.')),
+            Hemo: parseFloat(document.getElementById('hemo').value.replace(',', '.')),
+        };
+
+        const result = await Swal.fire({
+            title: 'Veriler İşleniyor',
+            text: 'Yapay zeka modeli böbrek risk skorunu yeniden hesaplıyor...',
+            icon: 'info',
+            showConfirmButton: false,
+            allowOutsideClick: false,
+            didOpen: () => { Swal.showLoading(); }
+        });
+
+        try {
+            const response = await fetch('/KindTest/Update', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ UpdateKidneyTestDataDto: dto })
+            });
+
+            if (response.ok) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Güncelleme Başarılı',
+                    text: 'Klinik değerler ve analiz sonuçları başarıyla güncellendi.',
+                    confirmButtonColor: '#0ea5e9',
+                    timer: 2000
+                }).then(() => window.location.href = document.referrer);
+            } else {
+                const errorData = await response.json();
+                Swal.fire('Hata', errorData.message || 'Bir hata oluştu.', 'error');
+            }
+        } catch (err) {
+            Swal.fire('Hata', 'Sunucu bağlantı hatası!', 'error');
+        }
+    }
+</script>

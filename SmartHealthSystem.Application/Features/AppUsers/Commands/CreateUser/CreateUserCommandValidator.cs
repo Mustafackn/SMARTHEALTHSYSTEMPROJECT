@@ -24,9 +24,14 @@ namespace SmartHealthSystem.Application.Features.AppUsers.Commands.CreateUser
                 .NotEmpty().WithMessage("Kullanıcı adı boş geçilemez.")
                 .MinimumLength(3).WithMessage("Kullanıcı adı en az 3 karakter olmalıdır.");
 
+            // Şifre Kuralları Geliştirildi
             RuleFor(x => x.UserDto.Password)
                 .NotEmpty().WithMessage("Şifre boş geçilemez.")
-                .MinimumLength(6).WithMessage("Şifre en az 6 karakter olmalıdır.");
+                .MinimumLength(6).WithMessage("Şifre en az 6 karakter olmalıdır.")
+                .Matches(@"[A-Z]").WithMessage("Şifre en az bir büyük harf içermelidir.")
+                .Matches(@"[a-z]").WithMessage("Şifre en az bir küçük harf içermelidir.")
+                .Matches(@"[0-9]").WithMessage("Şifre en az bir rakam içermelidir.")
+                .Matches(@"[\!\@\#\$\%\^\&\*\(\)\_\+\-\=\[\]\{\}\;\:\'\""\\\|\,\.\<\>\/\?]").WithMessage("Şifre en az bir özel karakter içermelidir.");
 
             RuleFor(x => x.UserDto.ConfirmPassword)
                 .Equal(x => x.UserDto.Password).WithMessage("Şifreler birbiriyle uyuşmuyor.");

@@ -4,4 +4,5 @@
   <Project Path="SmartHealthSystem.Infrastructure/SmartHealthSystem.Infrastructure.csproj" />
   <Project Path="SmartHealthSystem.Persistence/SmartHealthSystem.Persistence.csproj" />
   <Project Path="SmartHealthSystem.WebApi/SmartHealthSystem.WebApi.csproj" />
+  <Project Path="SmartHealthSystem.WebApp/SmartHealthSystem.WebApp.csproj" Id="b983cfec-c681-495f-a934-96f78a8901b6" />
 </Solution>

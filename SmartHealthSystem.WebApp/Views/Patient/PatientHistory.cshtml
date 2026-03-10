@@ -1,0 +1,245 @@
+﻿@model List<SmartHealthSystem.Application.DTOs.TestResultDto.TestResultListDto>
+
+@{
+    ViewData["Title"] = "Analiz Geçmişi";
+}
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+<style>
+    body {
+        font-family: 'Poppins', sans-serif;
+        background-color: #f8f9fc;
+    }
+
+    .header-section {
+        padding: 1.5rem 0;
+        margin-bottom: 1rem;
+    }
+
+    /* Breadcrumb */
+    .custom-breadcrumb {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 0.9rem;
+        margin-bottom: 10px;
+    }
+
+        .custom-breadcrumb a {
+            color: #4e73df;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .custom-breadcrumb span {
+            color: #858796;
+        }
+
+    /* Başlık Alanı */
+    .page-title-area {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+    }
+
+    .btn-back {
+        background: #fff;
+        color: #4e73df;
+        border: 1px solid #e3e6f0;
+        padding: 8px 20px;
+        border-radius: 10px;
+        font-weight: 600;
+        transition: 0.3s;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        text-decoration: none !important;
+    }
+
+        .btn-back:hover {
+            background: #4e73df;
+            color: #fff !important;
+            box-shadow: 0 4px 12px rgba(78,115,223,0.2);
+        }
+
+    /* Kart ve Tablo */
+    .main-card {
+        border: none;
+        border-radius: 15px;
+        box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+        overflow: hidden;
+    }
+
+    .card-header-blue {
+        background: #4e73df;
+        color: white;
+        padding: 1.2rem 1.5rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .table thead th {
+        background: #f8f9fc;
+        text-transform: uppercase;
+        font-size: 0.75rem;
+        color: #4e73df;
+        font-weight: 700;
+        padding: 1rem;
+        border: none;
+    }
+
+    .table tbody td {
+        vertical-align: middle;
+        padding: 1rem;
+        border-bottom: 1px solid #eff2f7;
+    }
+
+    /* Butonlar */
+    .action-btn {
+        width: 34px;
+        height: 34px;
+        border-radius: 8px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border: none;
+        transition: 0.2s;
+        margin: 0 2px;
+    }
+
+    .btn-edit {
+        background: #f6c23e;
+        color: white;
+    }
+
+    .btn-delete {
+        background: #e74a3b;
+        color: white;
+    }
+
+    .action-btn:hover {
+        transform: translateY(-2px);
+        filter: brightness(0.9);
+        color: white;
+    }
+
+    /* Rozetler */
+    .risk-badge {
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-weight: 600;
+        font-size: 0.85rem;
+    }
+
+    .risk-high {
+        background: #ffe8e8;
+        color: #e74a3b;
+    }
+
+    .risk-low {
+        background: #e1f7ec;
+        color: #1cc88a;
+    }
+</style>
+
+<div class="container-fluid">
+    <div class="header-section">
+        <div class="custom-breadcrumb">
+            <a href="/Patient/Index">Hastalar</a>
+            <span><i class="fas fa-chevron-right fa-xs"></i></span>
+            <span>Analiz Geçmişi</span>
+        </div>
+
+        <div class="page-title-area">
+            <div>
+                <h2 class="font-weight-bold text-gray-800 mb-0">Analiz Sonuçları</h2>
+                <p class="text-muted small mb-0">Hastanın tüm geçmiş test verileri aşağıda listelenmiştir.</p>
+            </div>
+            <a asp-action="Index" class="btn-back shadow-sm">
+                <i class="fas fa-undo-alt"></i> Listeye Dön
+            </a>
+        </div>
+    </div>
+
+    <div class="main-card bg-white">
+        <div class="card-header-blue">
+            <h6 class="mb-0 font-weight-bold"><i class="fas fa-list mr-2"></i> Tüm Test Sonuçları</h6>
+            <div class="small">Toplam: <strong>@Model.Count</strong> kayıt</div>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead>
+                    <tr>
+                        <th>Tarih</th>
+                        <th>Analiz Türü</th>
+                        <th>Risk Durumu</th>
+                        <th>Sağlık Skoru</th>
+                        <th>Kısa Notlar</th>
+                        <th class="text-center">İşlemler</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model != null && Model.Any())
+                    {
+                        foreach (var item in Model)
+                        {
+                            <tr>
+                                <td><i class="far fa-clock mr-2 text-muted"></i>@item.CreatedDate.ToString("dd.MM.yyyy")</td>
+                                <td class="font-weight-bold">@item.TestTypeName</td>
+                                <td>
+                                    <span class="risk-badge @(item.RiskPercentage > 50 ? "risk-high" : "risk-low")">
+                                        <i class="fas @(item.RiskPercentage > 50 ? "fa-caret-up" : "fa-caret-down") mr-1"></i>
+                                        %@item.RiskPercentage.ToString("F1")
+                                    </span>
+                                </td>
+                                <td>
+                                    <span class="text-primary font-weight-bold">@item.HealthScore</span> <small class="text-muted">/ 100</small>
+                                </td>
+                                <td>
+                                    <span class="text-muted d-inline-block text-truncate" style="max-width: 200px;" title="@item.Recommendations">
+                                        @item.Recommendations
+                                    </span>
+                                </td>
+                                <td class="text-center">
+                                    @* MERKEZİ YÖNLENDİRİCİ BUTONU *@
+                                    <a asp-controller="Patient"
+                                       asp-action="RedirectToUpdate"
+                                       asp-route-id="@item.Id"
+                                       class="action-btn btn-edit shadow-sm">
+                                        <i class="fas fa-pen fa-xs"></i>
+                                    </a>
+
+                                    <button onclick="confirmDelete('@item.Id')" class="action-btn btn-delete shadow-sm">
+                                        <i class="fas fa-trash fa-xs"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="6" class="text-center py-5">
+                                <i class="fas fa-folder-open fa-3x text-light mb-3"></i>
+                                <p class="text-muted">Bu hastaya ait analiz kaydı bulunamadı.</p>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    function confirmDelete(id) {
+        if(confirm("Bu kaydı kalıcı olarak silmek istediğinizden emin misiniz?")) {
+            // Silme işlemi için controller'a istek atabilirsin
+            window.location.href = "/Patient/Delete/" + id;
+        }
+    }
+</script>
