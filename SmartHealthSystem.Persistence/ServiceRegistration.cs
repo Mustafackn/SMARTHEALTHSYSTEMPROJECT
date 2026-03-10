@@ -2,8 +2,10 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using SmartHealthSystem.Application.Contracts;
 using SmartHealthSystem.Domain.Indetity;
 using SmartHealthSystem.Persistence.AppDbContext;
+using SmartHealthSystem.Persistence.Repoistories;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -34,6 +36,12 @@ namespace SmartHealthSystem.Persistence
             })
      .AddEntityFrameworkStores<AppDbContexts>()
      .AddDefaultTokenProviders();
+            services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+            services.AddScoped<IHeartDiseaseRepository, HeartDiseaseRepository>();
+            services.AddScoped<IKidneyDiseaseRepository, KidneyDiseaseRepository>();
+            services.AddScoped<ICancerTestDataRepository, CancerTestDataRepository>();
+            services.AddScoped<ITestResultRepository, TestResultRepository>();
+
         }
     }
 }

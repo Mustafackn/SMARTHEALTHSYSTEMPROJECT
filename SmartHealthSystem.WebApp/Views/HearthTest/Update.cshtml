@@ -1,0 +1,331 @@
+﻿@model SmartHealthSystem.Application.DTOs.HeratTestData.UpdateHeartTestDataDto
+
+@{
+    ViewData["Title"] = "Kalp Sağlığı Analizi Güncelle";
+}
+
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+    :root {
+        --heart-red: #ef4444;
+        --heart-dark-red: #b91c1c;
+        --medical-bg: #fdf2f2;
+        --deep-slate: #0f172a;
+        --glass-white: rgba(255, 255, 255, 0.95);
+    }
+
+    body {
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        background: radial-gradient(circle at top right, #fee2e2, #f8fafc);
+        color: var(--deep-slate);
+        min-height: 100vh;
+    }
+
+    .heart-dashboard-card {
+        background: var(--glass-white);
+        backdrop-filter: blur(15px);
+        border: 1px solid rgba(239, 68, 68, 0.1);
+        border-radius: 35px;
+        box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.08);
+        overflow: hidden;
+    }
+
+    .heart-banner {
+        background: linear-gradient(135deg, #1e293b 0%, #ef4444 100%);
+        padding: 50px 45px;
+        position: relative;
+    }
+
+        .heart-banner::after {
+            content: '\f21e';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            position: absolute;
+            right: 30px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 10rem;
+            color: white;
+            opacity: 0.08;
+            pointer-events: none;
+        }
+
+    .icon-box-white {
+        width: 65px;
+        height: 65px;
+        background: white;
+        color: var(--heart-red);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 20px;
+        font-size: 1.8rem;
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    }
+
+    /* Input Kartları */
+    .input-card {
+        background: white;
+        border: 2px solid #f1f5f9;
+        border-radius: 22px;
+        padding: 18px 22px;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+    }
+
+        .input-card:hover {
+            border-color: #fca5a5;
+            background: #fffafa;
+        }
+
+        .input-card:focus-within {
+            border-color: var(--heart-red);
+            box-shadow: 0 0 0 5px rgba(239, 68, 68, 0.1);
+            transform: translateY(-3px);
+        }
+
+    .mini-label {
+        font-size: 0.65rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        color: #94a3b8;
+        letter-spacing: 1.5px;
+        margin-bottom: 6px;
+        display: block;
+    }
+
+    .input-heart-style {
+        border: none;
+        background: transparent;
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: var(--deep-slate);
+        width: 100%;
+        padding: 0;
+    }
+
+        .input-heart-style:focus {
+            outline: none;
+        }
+
+    /* Grup Başlıkları */
+    .section-divider {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        margin: 40px 0 25px 0;
+    }
+
+        .section-divider span {
+            font-weight: 800;
+            font-size: 0.8rem;
+            color: var(--heart-red);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .section-divider .line {
+            height: 2px;
+            flex-grow: 1;
+            background: linear-gradient(to right, rgba(239, 68, 68, 0.2), transparent);
+        }
+
+    /* Butonlar */
+    .btn-glow-red {
+        background: var(--heart-red);
+        color: white;
+        border: none;
+        padding: 18px 45px;
+        border-radius: 20px;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+        box-shadow: 0 15px 35px rgba(239, 68, 68, 0.3);
+        transition: 0.4s;
+    }
+
+        .btn-glow-red:hover {
+            background: var(--heart-dark-red);
+            box-shadow: 0 20px 40px rgba(239, 68, 68, 0.5);
+            transform: translateY(-4px);
+            color: white;
+        }
+
+    .btn-outline-soft {
+        color: #64748b;
+        font-weight: 700;
+        text-decoration: none !important;
+        transition: 0.3s;
+    }
+
+        .btn-outline-soft:hover {
+            color: var(--deep-slate);
+        }
+</style>
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-xl-11">
+            <div class="heart-dashboard-card">
+                <div class="heart-banner d-flex align-items-center">
+                    <div class="icon-box-white mr-4">
+                        <i class="fas fa-heartbeat"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-white font-weight-bold mb-1">Kalp Analizi Revizyonu</h2>
+                        <p class="text-white-50 mb-0">Yapay zeka modelleri için klinik parametre güncelleme ekranı</p>
+                    </div>
+                </div>
+
+                <div class="p-4 p-lg-5">
+                    <form id="heartUpdateForm">
+                        <input type="hidden" id="heartDataId" value="@Model.Id" />
+
+                        <div class="section-divider">
+                            <span>Temel Klinik Veriler</span>
+                            <div class="line"></div>
+                        </div>
+
+                        <div class="row g-4">
+                            <div class="col-md-3 mb-4">
+                                <div class="input-card">
+                                    <label class="mini-label">YAŞ (AGE)</label>
+                                    <input type="number" class="input-heart-style" id="age" value="@Model.Age">
+                                </div>
+                            </div>
+                            <div class="col-md-3 mb-4">
+                                <div class="input-card">
+                                    <label class="mini-label">CİNSİYET (1:E, 0:K)</label>
+                                    <input type="number" class="input-heart-style" id="sex" value="@Model.Sex">
+                                </div>
+                            </div>
+                            <div class="col-md-3 mb-4">
+                                <div class="input-card">
+                                    <label class="mini-label">KAN BASINCI (TBP)</label>
+                                    <input type="number" class="input-heart-style" id="trestbps" value="@Model.Trestbps">
+                                </div>
+                            </div>
+                            <div class="col-md-3 mb-4">
+                                <div class="input-card">
+                                    <label class="mini-label">KOLESTEROL (CHL)</label>
+                                    <input type="number" class="input-heart-style" id="chol" value="@Model.Chol">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="section-divider">
+                            <span>EKG ve Stres Testi Bulguları</span>
+                            <div class="line"></div>
+                        </div>
+
+                        <div class="row g-4">
+                            <div class="col-md-4 mb-4">
+                                <div class="input-card">
+                                    <label class="mini-label">GÖĞÜS AĞRISI (CP)</label>
+                                    <input type="number" class="input-heart-style" id="cp" value="@Model.Cp">
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-4">
+                                <div class="input-card">
+                                    <label class="mini-label">MAX NABIZ (THALACH)</label>
+                                    <input type="number" class="input-heart-style" id="thalach" value="@Model.Thalach">
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-4">
+                                <div class="input-card">
+                                    <label class="mini-label">ST DEPRESYONU (OLD)</label>
+                                    <input type="text" class="input-heart-style" id="oldpeak" value="@Model.Oldpeak.ToString().Replace(",", ".")">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="section-divider">
+                            <span>İleri Tetkik ve Damar Görüntüleme</span>
+                            <div class="line"></div>
+                        </div>
+
+                        <div class="row g-4">
+                            @foreach (var (label, id, value) in new[] {
+                                                        ("Şeker", "fbs", Model.Fbs),
+                                                        ("EKG Sonuç", "restecg", Model.Restecg),
+                                                        ("Anjin", "exang", Model.Exang),
+                                                        ("Eğim", "slope", Model.Slope),
+                                                        ("Damar (CA)", "ca", Model.Ca),
+                                                        ("Thal", "thal", Model.Thal)
+                                                        })
+                            {
+                                <div class="col-md-2 mb-4">
+                                    <div class="input-card">
+                                        <label class="mini-label">@label</label>
+                                        <input type="number" class="input-heart-style" id="@id" value="@value">
+                                    </div>
+                                </div>
+                            }
+                        </div>
+
+                        <div class="d-flex justify-content-between align-items-center mt-5 pt-4 border-top">
+                            <a href="javascript:history.back()" class="btn-outline-soft">
+                                <i class="fas fa-arrow-left mr-2"></i> Geri Dön
+                            </a>
+                            <button type="button" onclick="runHeartAI()" class="btn-glow-red">
+                                <i class="fas fa-heart-pulse mr-2"></i> ANALİZİ GÜNCELLE
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    async function runHeartAI() {
+        const dto = {
+            Id: document.getElementById('heartDataId').value,
+            Age: parseInt(document.getElementById('age').value),
+            Sex: parseInt(document.getElementById('sex').value),
+            Cp: parseInt(document.getElementById('cp').value),
+            Trestbps: parseInt(document.getElementById('trestbps').value),
+            Chol: parseInt(document.getElementById('chol').value),
+            Fbs: parseInt(document.getElementById('fbs').value),
+            Restecg: parseInt(document.getElementById('restecg').value),
+            Thalach: parseInt(document.getElementById('thalach').value),
+            Exang: parseInt(document.getElementById('exang').value),
+            Oldpeak: parseFloat(document.getElementById('oldpeak').value.replace(',', '.')),
+            Slope: parseInt(document.getElementById('slope').value),
+            Ca: parseInt(document.getElementById('ca').value),
+            Thal: parseInt(document.getElementById('thal').value)
+        };
+
+        Swal.fire({
+            title: 'Analiz Başlatıldı',
+            text: 'Veriler yapay zeka tarafından işleniyor...',
+            showConfirmButton: false,
+            didOpen: () => Swal.showLoading()
+        });
+
+        try {
+            const response = await fetch('/HearthTest/Update', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ UpdateHeartTestDataDto: dto })
+            });
+
+            if (response.ok) {
+                const res = await response.json();
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Analiz Başarılı',
+                    text: 'Yeni Risk Skoru: %' + res.newRiskPercentage,
+                    confirmButtonColor: '#ef4444'
+                }).then(() => window.location.href = document.referrer);
+            } else {
+                Swal.fire('Hata!', 'Sunucu bir sorun bildirdi.', 'error');
+            }
+        } catch (err) {
+            Swal.fire('Hata!', 'Bağlantı kurulamadı.', 'error');
+        }
+    }
+</script>

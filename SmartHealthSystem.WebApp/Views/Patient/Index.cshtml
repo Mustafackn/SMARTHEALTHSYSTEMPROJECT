@@ -1,0 +1,195 @@
+﻿@using SmartHealthSystem.Application.DTOs.User
+@model List<GetAllUsersDto>
+
+@{
+    ViewData["Title"] = "Hastalarım";
+}
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+<style>
+    body {
+        font-family: 'Poppins', sans-serif;
+        background-color: #f8f9fc;
+    }
+
+    .container-fluid {
+        padding: 0 2rem;
+        width: 100%;
+    }
+
+    .page-header {
+        margin: 2rem 0;
+    }
+
+        .page-header h1 {
+            font-weight: 700;
+            color: #1e293b;
+        }
+
+    .card {
+        border: none;
+        border-radius: 15px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+        overflow: hidden;
+        width: 100%;
+    }
+
+    .card-header {
+        background: #4e73df !important;
+        padding: 1.5rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+        .card-header h6 {
+            color: white;
+            margin: 0;
+            font-size: 1.1rem;
+        }
+
+    .search-bar {
+        background: rgba(255,255,255,0.2);
+        border: none;
+        border-radius: 25px;
+        padding: 8px 20px;
+        color: white;
+        width: 300px;
+        transition: 0.3s;
+    }
+
+        .search-bar::placeholder {
+            color: rgba(255,255,255,0.7);
+        }
+
+        .search-bar:focus {
+            background: rgba(255,255,255,0.3);
+            outline: none;
+            box-shadow: none;
+            color: white;
+        }
+
+    .table {
+        width: 100%;
+        margin: 0;
+    }
+
+        .table thead th {
+            background: #f8f9fc;
+            color: #4e73df;
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            padding: 1.2rem;
+            border: none;
+        }
+
+        .table tbody td {
+            padding: 1.2rem;
+            vertical-align: middle;
+            border-top: 1px solid #edf2f7;
+        }
+
+    .patient-info {
+        display: flex;
+        align-items: center;
+    }
+
+    .avatar-circle {
+        width: 45px;
+        height: 45px;
+        background: #eef2ff;
+        color: #4e73df;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        margin-right: 15px;
+    }
+
+    .status-active {
+        background: #dcfce7;
+        color: #15803d;
+        padding: 5px 15px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 600;
+    }
+
+    .btn-action {
+        width: 35px;
+        height: 35px;
+        border-radius: 10px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 3px;
+        transition: 0.2s;
+        border: none;
+    }
+
+        .btn-action:hover {
+            transform: translateY(-3px);
+            color: white;
+            text-decoration: none;
+        }
+</style>
+
+<div class="container-fluid">
+    <div class="page-header">
+        <h1>Hasta Yönetimi</h1>
+        <p class="text-muted">Sistemde kayıtlı toplam @Model.Count hasta listeleniyor.</p>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <h6><i class="fas fa-users mr-2"></i> Hasta Listesi</h6>
+            <input type="text" class="search-bar" placeholder="İsim veya ID ile ara...">
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Hasta / Kimlik</th>
+                            <th>Kullanıcı Adı</th>
+                            <th>E-Posta</th>
+                            <th>Durum</th>
+                            <th class="text-center">İşlemler</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var user in Model)
+                        {
+                            <tr>
+                                <td>
+                                    <div class="patient-info">
+                                        <div class="avatar-circle">@user.FirstName[0]@user.LastName[0]</div>
+                                        <div>
+                                            <div class="font-weight-bold">@user.FirstName @user.LastName</div>
+                                            <small class="text-muted">ID: #@user.Id.Substring(0, 8)</small>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td><span class="text-primary font-weight-500">@@@user.UserName</span></td>
+                                <td>@user.Email</td>
+                                <td><span class="status-active">Aktif</span></td>
+                                <td class="text-center">
+                                    <a asp-controller="Patient" asp-action="PatientHistory" asp-route-id="@user.Id" class="btn btn-primary btn-action shadow-sm">
+                                        <i class="fas fa-eye fa-sm"></i>
+                                    </a>
+                                    <button class="btn btn-danger btn-action shadow-sm">
+                                        <i class="fas fa-trash fa-sm"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

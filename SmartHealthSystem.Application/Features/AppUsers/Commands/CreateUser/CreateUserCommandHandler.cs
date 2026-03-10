@@ -18,21 +18,38 @@ namespace SmartHealthSystem.Application.Features.AppUsers.Commands.CreateUser
 
         public async Task<CreateUserCommandResponse> Handle(CreateUserCommandRequest request, CancellationToken cancellationToken)
         {
-            var result = await _userManager.CreateAsync(new AppUser
+            // 1. Kullanıcı nesnesini hazırlıyoruz
+            var user = new AppUser
             {
                 Id = Guid.NewGuid(),
                 FirstName = request.UserDto.FirstName,
                 LastName = request.UserDto.LastName,
                 Email = request.UserDto.Email,
                 UserName = request.UserDto.UserName
-            }, request.UserDto.Password);
+            };
+
+            // 2. Kullanıcıyı veritabanına kaydediyoruz
+            var result = await _userManager.CreateAsync(user, request.UserDto.Password);
 
             if (result.Succeeded)
             {
-                return new CreateUserCommandResponse { Succeeded = true, Message = "Kullanıcı başarıyla oluşturuldu." };
+                // 3. Kayıt başarılıysa, kullanıcıya otomatik olarak "User" rolünü tanımlıyoruz
+                // Bu isim, SeedData içinde verdiğin "User" ismiyle tam eşleşmelidir.
+                await _userManager.AddToRoleAsync(user, "User");
+
+                return new CreateUserCommandResponse
+                {
+                    Succeeded = true,
+                    Message = "Kullanıcı başarıyla oluşturuldu ve 'User' rolü atandı."
+                };
             }
 
-            return new CreateUserCommandResponse { Succeeded = false, Message = string.Join(", ", result.Errors.Select(x => x.Description)) };
+            // Hata durumunda mesajları birleştirip dönüyoruz
+            return new CreateUserCommandResponse
+            {
+                Succeeded = false,
+                Message = string.Join(", ", result.Errors.Select(x => x.Description))
+            };
         }
     }
 }

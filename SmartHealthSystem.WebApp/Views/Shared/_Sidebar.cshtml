@@ -1,0 +1,56 @@
+﻿<ul class="sidebar">
+    <div class="sidebar-brand">
+        <i class="fas fa-hand-holding-medical mr-2" style="font-size: 1.5rem;"></i>
+        <h3>SMART HEALTH</h3>
+    </div>
+
+    <div class="user-profile-sidebar">
+        <img src="~/img/doctor.png" alt="profile">
+        <div>
+            <p class="m-0 font-weight-bold" style="font-size: 0.85rem;">Admin User</p>
+            <small style="color: rgba(255,255,255,0.6);">System Manager</small>
+        </div>
+    </div>
+
+    <hr style="border-top: 1px solid rgba(255,255,255,0.1); margin: 0;">
+
+    <li class="nav-item mt-2">
+        <a class="nav-link" asp-controller="Home" asp-action="Index">
+            <i class="fas fa-home"></i> <span>Dashboard</span>
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="#">
+            <i class="fas fa-user-md"></i> <span>Doktorlar</span>
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" asp-controller="Patient" asp-action="Index">
+            <i class="fas fa-procedures"></i> <span>Hastalarım</span>
+        </a>
+    </li>
+
+    @* BÖBREK ANALİZİ - İkon fa-microscope olarak güncellendi *@
+    <li class="nav-item">
+        <a class="nav-link" asp-controller="KindTest" asp-action="Index">
+            <i class="fas fa-microscope"></i> <span>Böbrek Sağlık Analizi</span>
+        </a>
+    </li>
+
+    @* KALP SAĞLIĞI ANALİZİ - Tasarım diğer butonlarla eşitlendi *@
+    <li class="nav-item">
+        <a class="nav-link" asp-controller="HearthTest" asp-action="Index">
+            <i class="fas fa-heartbeat"></i> <span>Kalp Sağlığı Analizi</span>
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" asp-controller="CancerTest" asp-action="Index">
+            <i class="fas fa-dna"></i> <span>Meme Kanseri Analizi</span>
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="#">
+            <i class="fas fa-envelope"></i> <span>Mesajlar</span>
+        </a>
+    </li>
+</ul>

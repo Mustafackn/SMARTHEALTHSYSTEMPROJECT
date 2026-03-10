@@ -1,0 +1,276 @@
+﻿@using SmartHealthSystem.Application.DTOs.User
+@model List<GetAllUsersDto>
+
+@{
+    ViewData["Title"] = "Meme Kanseri Riski Analizi";
+}
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+
+<style>
+    /* Sayfa Arka Planı ve Konteynır */
+    .analysis-container {
+        background: #F9F9F9; /* Görseldeki hafif gri/beyaz zemin */
+        padding: 2.5rem;
+        min-height: 100vh;
+    }
+
+    /* Ana Kart Tasarımı */
+    .card-custom {
+        border: none;
+        border-radius: 15px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        background: white;
+        max-width: 1100px;
+        margin: 0 auto;
+    }
+
+    /* Başlık ve İkon */
+    .page-header {
+        color: #333;
+        font-weight: 600;
+        margin-bottom: 2rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 15px;
+    }
+
+    /* Bölüm Başlıkları (Kırmızı Çizgili olanlar) */
+    .section-title {
+        color: #D32F2F; /* Görseldeki kırmızı tonu */
+        font-weight: 700;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        border-bottom: 1px solid #EEEEEE;
+        padding-bottom: 8px;
+        margin-top: 25px;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    /* Input Alanları */
+    .form-label {
+        font-size: 0.85rem;
+        font-weight: 500;
+        color: #555;
+    }
+
+    .form-control, .form-select {
+        border: 1px solid #E0E0E0;
+        border-radius: 8px;
+        padding: 10px 15px;
+        font-size: 0.9rem;
+        background-color: #FFFFFF;
+    }
+
+        .form-control:focus {
+            border-color: #D32F2F;
+            box-shadow: 0 0 0 0.2rem rgba(211, 47, 47, 0.15);
+        }
+
+    /* Analiz Butonu (Kırmızı) */
+    .btn-analyze {
+        background: #D32F2F; /* */
+        color: white;
+        padding: 12px;
+        font-weight: 600;
+        border-radius: 10px;
+        width: 100%;
+        border: none;
+        margin-top: 30px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        transition: all 0.3s ease;
+    }
+
+        .btn-analyze:hover {
+            background: #B71C1C;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(211, 47, 47, 0.3);
+        }
+
+    /* Sonuç Paneli */
+    #resultPanel {
+        display: none;
+        margin-top: 40px;
+        background: #FFFBFB;
+        border: 1px solid #FFEBEE;
+        border-radius: 12px;
+    }
+
+    .risk-value {
+        color: #D32F2F;
+        font-size: 3.5rem;
+        font-weight: 800;
+    }
+</style>
+
+<div class="analysis-container">
+    <div class="card card-custom p-4 p-lg-5 animate__animated animate__fadeIn">
+        <h3 class="page-header">
+            <i class="fas fa-hourglass-half text-danger"></i> Meme Kanseri Hücre Analizi
+        </h3>
+
+        <form id="cancerAnalysisForm">
+            <div class="section-title">
+                <i class="fas fa-user-injured"></i> 1. HASTA SEÇİMİ
+            </div>
+            <div class="mb-4">
+                <select class="form-select form-select-lg" name="PatientId" id="PatientId" required>
+                    <option value="">-- Analiz Edilecek Hastayı Seçiniz --</option>
+                    @foreach (var user in Model)
+                    {
+                        <option value="@user.Id">@user.FirstName @user.LastName (@user.Email)</option>
+                    }
+                </select>
+            </div>
+
+            <div class="section-title">
+                <i class="fas fa-vial"></i> 2. LABORATUVAR VERİLERİ (HÜCRE ÇEKİRDEĞİ)
+            </div>
+
+            <div class="row g-4 mb-3">
+                <div class="col-md-3">
+                    <label class="form-label">Yarıçap (Radius)</label>
+                    <input type="number" step="0.01" name="RadiusMean" class="form-control" placeholder="Örn: 14.5" required>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Doku (Texture)</label>
+                    <input type="number" step="0.01" name="TextureMean" class="form-control" placeholder="Örn: 19.2" required>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Çevre (Perimeter)</label>
+                    <input type="number" step="0.1" name="PerimeterMean" class="form-control" placeholder="Örn: 95.0" required>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Alan (Area)</label>
+                    <input type="number" step="0.1" name="AreaMean" class="form-control" placeholder="Örn: 650.0" required>
+                </div>
+            </div>
+
+            <div class="row g-4 mb-3">
+                <div class="col-md-4">
+                    <label class="form-label">Pürüzsüzlük</label>
+                    <input type="number" step="0.0001" name="SmoothnessMean" class="form-control" placeholder="Örn: 0.095" required>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Sıkılık</label>
+                    <input type="number" step="0.0001" name="CompactnessMean" class="form-control" placeholder="Örn: 0.12" required>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">İçbükeylik</label>
+                    <input type="number" step="0.0001" name="ConcavityMean" class="form-control" placeholder="Örn: 0.08" required>
+                </div>
+            </div>
+
+            <div class="row g-4 mb-4">
+                <div class="col-md-4">
+                    <label class="form-label">İçbükey Noktalar</label>
+                    <input type="number" step="0.0001" name="ConcavePointsMean" class="form-control" placeholder="Örn: 0.04" required>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Simetri</label>
+                    <input type="number" step="0.0001" name="SymmetryMean" class="form-control" placeholder="Örn: 0.18" required>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Fraktal Boyut</label>
+                    <input type="number" step="0.0001" name="FractalDimensionMean" class="form-control" placeholder="Örn: 0.06" required>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-analyze">
+                <i class="fas fa-plus-circle me-2"></i> YAPAY ZEKA ANALİZİNİ BAŞLAT
+            </button>
+        </form>
+
+        <div id="resultPanel" class="p-4 animate__animated animate__zoomIn">
+            <div class="row text-center align-items-center">
+                <div class="col-md-4 border-end">
+                    <p class="text-muted small fw-bold mb-0">MALİGNİTE RİSKİ</p>
+                    <h1 id="resRisk" class="risk-value">%0.0</h1>
+                    <span id="resBadge" class="badge rounded-pill p-2 px-3">Analiz Tamamlandı</span>
+                </div>
+                <div class="col-md-4 border-end">
+                    <p class="text-muted small fw-bold mb-1">SAĞLIK SKORU</p>
+                    <h1 id="resScore" class="display-4 fw-bold">0</h1>
+                    <div class="progress mx-auto" style="height: 8px; width: 80%; border-radius: 10px;">
+                        <div id="resProgress" class="progress-bar bg-success" role="progressbar"></div>
+                    </div>
+                </div>
+                <div class="col-md-4 text-start ps-4">
+                    <p class="text-muted small fw-bold mb-1">DOKTOR NOTU / ÖNERİ</p>
+                    <p id="resAdvice" class="small fw-medium text-dark lh-sm"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    document.getElementById('cancerAnalysisForm').addEventListener('submit', async function (e) {
+        e.preventDefault();
+
+        const formData = new FormData(this);
+        const finalRequest = {};
+
+        formData.forEach((value, key) => {
+            const capitalizedKey = key.charAt(0).toUpperCase() + key.slice(1);
+            if (key === "PatientId") {
+                finalRequest[capitalizedKey] = value;
+            } else {
+                finalRequest[capitalizedKey] = parseFloat(value.toString().replace(',', '.'));
+            }
+        });
+
+        Swal.fire({
+            title: 'Analiz Başlatıldı',
+            text: 'Yapay zeka hücre morfolojisini inceliyor...',
+            imageUrl: 'https://cdn-icons-png.flaticon.com/512/2921/2921105.png',
+            imageWidth: 100,
+            allowOutsideClick: false,
+            showConfirmButton: false,
+            didOpen: () => { Swal.showLoading(); }
+        });
+
+        try {
+            const response = await fetch('/CancerTest/CreateAnalysis', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(finalRequest)
+            });
+
+            const result = await response.json();
+
+            if (response.ok && result.isSuccess) {
+                // UI Güncelleme (Veritabanındaki verilere göre)
+                document.getElementById('resRisk').innerText = '%' + result.riskPercentage.toFixed(1);
+                document.getElementById('resScore').innerText = result.healthScore;
+                document.getElementById('resAdvice').innerText = result.recommendations;
+                document.getElementById('resProgress').style.width = result.healthScore + "%";
+                document.getElementById('resultPanel').style.display = 'block';
+
+                const badge = document.getElementById('resBadge');
+                if (result.riskPercentage > 50) {
+                    badge.className = "badge bg-danger rounded-pill p-2 px-3";
+                    badge.innerText = "YÜKSEK RİSK TESPİT EDİLDİ";
+                } else {
+                    badge.className = "badge bg-success rounded-pill p-2 px-3";
+                    badge.innerText = "DÜŞÜK RİSK TESPİT EDİLDİ";
+                }
+
+                Swal.close();
+                document.getElementById('resultPanel').scrollIntoView({ behavior: 'smooth' });
+            } else {
+                Swal.fire('Hata', result.message || 'Analiz başarısız.', 'error');
+            }
+        } catch (error) {
+            Swal.fire('Bağlantı Hatası', 'Python AI servisi (Port 8004) yanıt vermiyor.', 'error');
+        }
+    });
+</script>

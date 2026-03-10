@@ -19,6 +19,7 @@ builder.Services.AddPersistenceServices(builder.Configuration);
 builder.Services.AddInfrastructureServices(); // Infrastructure katmanındaki servisleri kaydeder
 builder.Services.AddApplicationServices();
 builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddHttpClient();
 builder.Services.AddSwaggerGen();
 builder.Services.AddAuthentication(options =>
 {

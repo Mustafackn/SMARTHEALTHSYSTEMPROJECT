@@ -1,0 +1,208 @@
+﻿<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+<style>
+    :root {
+        --primary: #4361ee;
+        --bg-body: #f4f7fe;
+        --text-main: #2b3674;
+        --text-muted: #a3aed0;
+        --white: #ffffff;
+    }
+
+    body {
+        background-color: var(--bg-body);
+        font-family: 'Inter', sans-serif;
+        color: var(--text-main);
+    }
+
+    .dashboard-container {
+        max-width: 1300px;
+        margin: 2rem auto;
+        padding: 0 1.5rem;
+    }
+
+    .glass-card {
+        background: var(--white);
+        border: none;
+        border-radius: 20px;
+        box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.03);
+        overflow: hidden;
+    }
+
+    .header-section {
+        padding: 2rem;
+        border-bottom: 1px solid #f1f1f9;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .search-group {
+        position: relative;
+        width: 320px;
+    }
+
+        .search-group input {
+            border-radius: 12px;
+            background: #f4f7fe;
+            border: 1px solid transparent;
+            padding: 12px 12px 12px 45px;
+            font-weight: 500;
+            transition: 0.3s;
+            width: 100%;
+        }
+
+            .search-group input:focus {
+                border-color: var(--primary);
+                background: white;
+                outline: none;
+            }
+
+        .search-group i {
+            position: absolute;
+            left: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+        }
+
+    .table thead th {
+        background: #fcfcfd;
+        color: var(--text-muted);
+        font-weight: 700;
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        border-bottom: 2px solid #f1f4f9;
+        padding: 1.2rem;
+    }
+
+    .table td {
+        padding: 1.2rem;
+        vertical-align: middle;
+        border-bottom: 1px solid #f1f4f9;
+    }
+
+    .badge-id {
+        color: var(--primary);
+        font-weight: 800;
+    }
+
+    .gender-badge {
+        padding: 6px 14px;
+        border-radius: 10px;
+        font-size: 0.85rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .gender-1 {
+        background: #eef2ff;
+        color: #4361ee;
+    }
+
+    .gender-0 {
+        background: #fff1f2;
+        color: #e11d48;
+    }
+
+    .action-group {
+        display: flex;
+        gap: 8px;
+        justify-content: center;
+    }
+
+    .btn-circle {
+        width: 40px;
+        height: 40px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: none;
+        transition: 0.3s;
+        cursor: pointer;
+        text-decoration: none;
+    }
+
+    .btn-view {
+        background: #f4f7fe;
+        color: #4361ee;
+    }
+
+        .btn-view:hover {
+            background: #4361ee;
+            color: white;
+        }
+</style>
+
+<div class="dashboard-container animate__animated animate__fadeIn">
+    <div class="card glass-card">
+        <div class="header-section">
+            <div>
+                <h3 style="font-weight: 800; margin: 0;">Analiz Kayıtları</h3>
+                <p style="color: var(--text-muted); font-size: 0.9rem; margin: 0;">Sistemdeki tüm teknik verileri inceleyin</p>
+            </div>
+            <div class="search-group">
+                <i class="fas fa-search"></i>
+                <input type="text" id="idSearch" placeholder="ID veya veri ara..." onkeyup="searchById()">
+            </div>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table mb-0 text-center">
+                <thead>
+                    <tr>
+                        <th width="10%">ID</th>
+                        <th width="15%">YAŞ</th>
+                        <th width="15%">CİNSİYET</th>
+                        <th width="20%">KAN BASINCI</th>
+                        <th width="20%">TARİH</th>
+                        <th width="20%">İŞLEMLER</th>
+                    </tr>
+                </thead>
+                <tbody id="resultTableBody"></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    fetch('/HearthTest/GetAllTechnicalData')
+        .then(res => res.json())
+        .then(data => {
+            const body = document.getElementById('resultTableBody');
+            body.innerHTML = '';
+            data.forEach(item => {
+                const gClass = item.sex == 1 ? 'gender-1' : 'gender-0';
+                const gLabel = item.sex == 1 ? 'Erkek' : 'Kadın';
+                const gIcon = item.sex == 1 ? 'fa-mars' : 'fa-venus';
+
+                body.innerHTML += `
+                    <tr>
+                        <td><span class="badge-id">#${item.id}</span></td>
+                        <td class="fw-bold">${item.age} Yaş</td>
+                        <td><span class="gender-badge ${gClass}"><i class="fas ${gIcon}"></i>${gLabel}</span></td>
+                        <td><i class="fas fa-heartbeat text-danger me-2"></i>${item.trestbps} <small class="text-muted">mmHg</small></td>
+                        <td>${new Date(item.createdDate).toLocaleDateString()}</td>
+                        <td>
+                            <div class="action-group">
+                                <a href="/HearthTest/PatientHistory/${item.appUserId}" class="btn-circle btn-view" title="Detaylar">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                                <button class="btn-circle btn-edit" style="background:#fff9e6; color:#ffb800;"><i class="fas fa-pen"></i></button>
+                                <button class="btn-circle btn-delete" style="background:#fff5f5; color:#ff4d4d;"><i class="fas fa-trash"></i></button>
+                            </div>
+                        </td>
+                    </tr>`;
+            });
+        });
+
+    function searchById() {
+        const val = document.getElementById('idSearch').value.toLowerCase();
+        const rows = document.querySelectorAll('#resultTableBody tr');
+        rows.forEach(row => { row.style.display = row.innerText.toLowerCase().includes(val) ? '' : 'none'; });
+    }
+</script>
