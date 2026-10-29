@@ -183,6 +183,118 @@ namespace SmartHealthSystem.Persistence.Migrations
                     b.ToTable("CancerTestDatas");
                 });
 
+            modelBuilder.Entity("SmartHealthSystem.Domain.Entites.CardiovascularTestData", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("Age")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Cholesterol")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("DiastolicBP")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Gender")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Glucose")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Height")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsAlcoholConsumer")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsSmoking")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("SystolicBP")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TestResultId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("UpdatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<float>("Weight")
+                        .HasColumnType("real");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TestResultId")
+                        .IsUnique();
+
+                    b.ToTable("CardiovascularTestDatas");
+                });
+
+            modelBuilder.Entity("SmartHealthSystem.Domain.Entites.DiabetesTestData", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<float>("Age")
+                        .HasColumnType("real");
+
+                    b.Property<float>("BMI")
+                        .HasColumnType("real");
+
+                    b.Property<float>("BloodGlucoseLevel")
+                        .HasColumnType("real");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Gender")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<float>("HbA1cLevel")
+                        .HasColumnType("real");
+
+                    b.Property<int>("HeartDisease")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Hypertension")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("SmokingHistory")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("TestResultId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("UpdatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TestResultId")
+                        .IsUnique();
+
+                    b.ToTable("DiabetesTestDatas");
+                });
+
             modelBuilder.Entity("SmartHealthSystem.Domain.Entites.HeartTestData", b =>
                 {
                     b.Property<int>("Id")
@@ -321,6 +433,45 @@ namespace SmartHealthSystem.Persistence.Migrations
                         .IsUnique();
 
                     b.ToTable("KidneyTestDatas");
+                });
+
+            modelBuilder.Entity("SmartHealthSystem.Domain.Entites.PromoBanner", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ImageUrl")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("Order")
+                        .HasColumnType("int");
+
+                    b.Property<string>("TargetUrl")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("UpdatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("PromoBanners");
                 });
 
             modelBuilder.Entity("SmartHealthSystem.Domain.Entites.SmartHealthSystem.Domain.Entities.TestType", b =>
@@ -598,6 +749,28 @@ namespace SmartHealthSystem.Persistence.Migrations
                     b.Navigation("TestResult");
                 });
 
+            modelBuilder.Entity("SmartHealthSystem.Domain.Entites.CardiovascularTestData", b =>
+                {
+                    b.HasOne("SmartHealthSystem.Domain.Entites.TestResult", "TestResult")
+                        .WithOne("CardiovascularTestData")
+                        .HasForeignKey("SmartHealthSystem.Domain.Entites.CardiovascularTestData", "TestResultId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("TestResult");
+                });
+
+            modelBuilder.Entity("SmartHealthSystem.Domain.Entites.DiabetesTestData", b =>
+                {
+                    b.HasOne("SmartHealthSystem.Domain.Entites.TestResult", "TestResult")
+                        .WithOne("DiabetesTestData")
+                        .HasForeignKey("SmartHealthSystem.Domain.Entites.DiabetesTestData", "TestResultId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("TestResult");
+                });
+
             modelBuilder.Entity("SmartHealthSystem.Domain.Entites.HeartTestData", b =>
                 {
                     b.HasOne("SmartHealthSystem.Domain.Entites.TestResult", "TestResult")
@@ -647,6 +820,10 @@ namespace SmartHealthSystem.Persistence.Migrations
             modelBuilder.Entity("SmartHealthSystem.Domain.Entites.TestResult", b =>
                 {
                     b.Navigation("CancerTestData");
+
+                    b.Navigation("CardiovascularTestData");
+
+                    b.Navigation("DiabetesTestData");
 
                     b.Navigation("HeartTestData");
 

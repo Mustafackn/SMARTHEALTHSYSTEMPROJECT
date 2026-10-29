@@ -1,6 +1,7 @@
+using Microsoft.Extensions.FileProviders;
 using SmartHealthSystem.Application;
-using SmartHealthSystem.Persistence;
 using SmartHealthSystem.Infrastructure;
+using SmartHealthSystem.Persistence;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddPersistenceServices(builder.Configuration);
@@ -25,13 +26,20 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
+
 app.UseHttpsRedirection();
 app.UseRouting();
 
 app.UseAuthorization();
 
 app.MapStaticAssets();
-
+app.UseStaticFiles(); // wwwroot klasörünü dışarı açar
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(
+        Path.Combine(builder.Environment.ContentRootPath, "wwwroot", "img", "banners")),
+    RequestPath = "/img/banners"
+});
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}")

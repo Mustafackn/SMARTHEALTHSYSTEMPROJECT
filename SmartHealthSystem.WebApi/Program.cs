@@ -60,9 +60,15 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI(); // Swagger arayüzünü etkinleştirir
 }
 app.UseHttpsRedirection();
-
+// WebApp kapalıyken resimleri WebApi üzerinden sunmak için:
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new Microsoft.Extensions.FileProviders.PhysicalFileProvider(
+        Path.Combine(Directory.GetCurrentDirectory(), "..", "SmartHealthSystem.WebApp", "wwwroot")),
+    RequestPath = "/webapp_files"
+});
 app.UseAuthorization();
-
+app.UseCors("AllowAll");
 app.MapControllers();
 app.UseAuthentication(); // Kimsin? (Token kontrolü)
 app.UseAuthorization();

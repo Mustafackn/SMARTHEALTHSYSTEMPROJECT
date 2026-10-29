@@ -11,6 +11,11 @@ namespace SmartHealthSystem.Persistence.Configuration
     {
         public void Configure(EntityTypeBuilder<TestResult> builder)
         {
+            // DiabetesTestData ile 1:1 ilişki
+            builder.HasOne(tr => tr.DiabetesTestData)
+                   .WithOne(dt => dt.TestResult)
+                   .HasForeignKey<DiabetesTestData>(dt => dt.TestResultId)
+                   .OnDelete(DeleteBehavior.Cascade);
             // AppUser (Guid) ile ilişki
             builder.HasOne(tr => tr.User)
                    .WithMany()
@@ -30,6 +35,10 @@ namespace SmartHealthSystem.Persistence.Configuration
                    .WithOne(ct => ct.TestResult)
                    .HasForeignKey<CancerTestData>(ct => ct.TestResultId)
                    .OnDelete(DeleteBehavior.Cascade);
+            builder.HasOne(tr => tr.CardiovascularTestData)
+       .WithOne(cv => cv.TestResult)
+       .HasForeignKey<CardiovascularTestData>(cv => cv.TestResultId)
+       .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

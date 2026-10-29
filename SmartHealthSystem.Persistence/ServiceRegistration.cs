@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SmartHealthSystem.Application.Contracts;
+using SmartHealthSystem.Domain.Entites;
 using SmartHealthSystem.Domain.Indetity;
 using SmartHealthSystem.Persistence.AppDbContext;
 using SmartHealthSystem.Persistence.Repoistories;
@@ -41,6 +42,9 @@ namespace SmartHealthSystem.Persistence
             services.AddScoped<IKidneyDiseaseRepository, KidneyDiseaseRepository>();
             services.AddScoped<ICancerTestDataRepository, CancerTestDataRepository>();
             services.AddScoped<ITestResultRepository, TestResultRepository>();
+            services.AddScoped<IDiabetesRepository, DiabetesRepository>();
+            services.AddScoped<ICardiovascularRepository, CardiovascularRepository>();
+            services.AddScoped<IPromoBannerRepository, PromoBannerRepository>();
 
         }
     }

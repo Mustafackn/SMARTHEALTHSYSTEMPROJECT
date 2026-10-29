@@ -17,31 +17,41 @@ namespace SmartHealthSystem.Application.Features.AppUsers.Queries.GetUsers
         {
             _userManager = userManager;
         }
-
         public async Task<List<GetAllUsersDto>> Handle(GetUsersQueryRequest request, CancellationToken cancellationToken)
         {
-            // 1. Identity üzerinden "User" rolündeki kullanıcıları belleğe alıyoruz (Async)
-            var usersInRole = await _userManager.GetUsersInRoleAsync("User");
-
-            // 2. Listeyi IQueryable'a çevirip filtreleme yapıyoruz
-            var query = usersInRole.AsQueryable();
-
-            // 3. Arama filtresi: Id bazlı arama yapıyorsan (Görseldeki gibi)
+            // 1. Eğer SearchTerm bir ID ise, direkt o kullanıcıyı getir (Rol kısıtlamasına takılmadan)
             if (!string.IsNullOrWhiteSpace(request.SearchTerm))
             {
-                query = query.Where(u => u.Id.ToString() == request.SearchTerm.Trim());
+                var user = await _userManager.FindByIdAsync(request.SearchTerm.Trim());
+
+                if (user != null)
+                {
+                    return new List<GetAllUsersDto>
+            {
+                new GetAllUsersDto
+                {
+                    Id = user.Id.ToString(),
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    UserName = user.UserName,
+                    Email = user.Email
+                }
+            };
+                }
+                // Kullanıcı ID ile bulunamadıysa boş liste dön
+                return new List<GetAllUsersDto>();
             }
 
-            // 4. HATA ÇÖZÜMÜ: Veriler zaten bellekte olduğu için ToListAsync() yerine ToList() kullanıyoruz.
-            // Çünkü 'usersInRole' artık bir SQL sorgusu değil, bir C# Listesidir.
-            return query.Select(u => new GetAllUsersDto
+            // 2. Eğer SearchTerm boşsa, genel listeyi getir (Eski mantığın)
+            var usersInRole = await _userManager.GetUsersInRoleAsync("User");
+            return usersInRole.Select(u => new GetAllUsersDto
             {
                 Id = u.Id.ToString(),
                 FirstName = u.FirstName,
                 LastName = u.LastName,
                 UserName = u.UserName,
                 Email = u.Email
-            }).ToList(); // <-- Burayı ToList() yaptık
+            }).ToList();
         }
     }
 }

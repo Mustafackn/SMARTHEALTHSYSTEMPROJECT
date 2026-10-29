@@ -1,0 +1,109 @@
+﻿@using System.Globalization
+@{
+    ViewData["Title"] = "Analiz Sonuçları";
+
+    double risk = 0;
+    string riskStr = ViewBag.RiskPercentage?.ToString();
+    if (!string.IsNullOrEmpty(riskStr))
+    {
+        // Gelen veriyi güvenli bir şekilde double'a cast ediyoruz
+        double.TryParse(riskStr.Replace(",", "."), NumberStyles.Any, CultureInfo.InvariantCulture, out risk);
+    }
+
+    // KRİTİK KONTROL: Eğer sayı 0 ile 1 arasındaysa (Örn: 0.1334), ekran tasarımı için 100 ile çarpıyoruz.
+    // Eğer zaten 13.34 geldiyse aynen bırakıyoruz. Böylece karmaşa tamamen bitiyor.
+    if (risk > 0 && risk <= 1)
+    {
+        risk = risk * 100;
+    }
+
+    var score = ViewBag.HealthScore?.ToString() ?? "0";
+    var recommendations = ViewBag.Recommendations as IEnumerable<string>;
+
+    // Risk durumuna göre renk ve ikon belirleme (Yüzde değerlerine göre güncellendi)
+    string colorClass = risk > 70 ? "danger" : (risk > 35 ? "warning" : "success");
+    string iconClass = risk > 70 ? "bi-exclamation-triangle-fill" : (risk > 35 ? "bi-activity" : "bi-check-circle-fill");
+    string statusText = risk > 70 ? "Yüksek Risk" : (risk > 35 ? "Orta Risk" : "Düşük Risk / Sağlıklı");
+}
+
+<div class="container mt-5 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-lg" style="border-radius: 25px; overflow: hidden;">
+                
+                @* Başlık Bölümü *@
+                <div class="bg-@colorClass p-4 text-center text-white">
+                    <i class="bi @iconClass display-4"></i>
+                    <h2 class="fw-bold mt-2">Analiz Sonucu: @statusText</h2>
+                </div>
+
+                <div class="card-body p-5">
+                    @* Risk Göstergesi *@
+                    <div class="text-center mb-5">
+                        <h6 class="text-uppercase text-muted fw-bold mb-3">Kardiyovasküler Risk Oranı</h6>
+                        <div class="position-relative d-inline-block">
+                            <h1 class="display-1 fw-bold text-@colorClass" style="font-size: 5rem;">%@risk.ToString("F1", CultureInfo.InvariantCulture)</h1>
+                        </div>
+                        
+                        <div class="progress mt-3" style="height: 12px; border-radius: 10px;">
+                            <div class="progress-bar progress-bar-striped progress-bar-animated bg-@colorClass"
+                                 role="progressbar" style="width: @(risk > 100 ? 100 : risk).ToString(" F0", CultureInfo.InvariantCulture)%"></div>
+                        </div>
+                    </div>
+
+                    <div class="row g-4 mb-5 text-center">
+                        <div class="col-6">
+                            <div class="p-3 border rounded-4 bg-light shadow-sm">
+                                <h4 class="fw-bold text-primary mb-0">@score</h4>
+                                <small class="text-muted text-uppercase fw-bold">Sağlık Skoru</small>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="p-3 border rounded-4 bg-light shadow-sm">
+                                <h4 class="fw-bold text-dark mb-0">v1.0</h4>
+                                <small class="text-muted text-uppercase fw-bold">AI Model</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    @* Yapay Zeka Tavsiyeleri *@
+                    <div class="p-4 rounded-4" style="background-color: #f8fafc; border-left: 5px solid #0d6efd;">
+                        <h5 class="fw-bold mb-4 text-dark">
+                            <i class="bi bi-robot me-2 text-primary"></i>Yapay Zeka Özel Tavsiyeleri
+                        </h5>
+                        <ul class="list-unstyled mb-0">
+                            @if (recommendations != null && recommendations.Any())
+                            {
+                                foreach (var rec in recommendations)
+                                {
+                                    <li class="mb-3 d-flex align-items-start">
+                                        <i class="bi bi-patch-check-fill text-primary me-3 mt-1"></i>
+                                        <span class="text-secondary fw-medium">@rec</span>
+                                    </li>
+                                }
+                            }
+                            else
+                            {
+                                <li class="text-muted">Yaşam tarzınıza dair özel bir uyarı bulunmadı. Mevcut düzeninizi koruyun.</li>
+                            }
+                        </ul>
+                    </div>
+
+                    @* Aksiyon Butonları *@
+                    <div class="mt-5 d-flex gap-3 justify-content-center d-print-none">
+                        <a asp-action="Create" class="btn btn-outline-secondary px-4 py-2 fw-bold" style="border-radius: 12px;">
+                            <i class="bi bi-arrow-left me-2"></i> Yeni Analiz
+                        </a>
+                        <button onclick="window.print()" class="btn btn-dark px-4 py-2 fw-bold" style="border-radius: 12px;">
+                            <i class="bi bi-printer me-2"></i> Raporu Yazdır
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <p class="text-center text-muted mt-4 small">
+                <i class="bi bi-info-circle me-1"></i> Bu rapor yapay zeka tarafından oluşturulmuştur ve tıbbi tavsiye yerine geçmez.
+            </p>
+        </div>
+    </div>
+</div>

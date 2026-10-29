@@ -1,0 +1,90 @@
+﻿@model SmartHealthSystem.Application.DTOs.BannerDto.UpdateBannerDto
+
+@{
+    ViewData["Title"] = "Banner Güncelle";
+}
+
+<div class="container mt-4">
+    <h2>Banner Düzenle</h2>
+    <hr />
+
+    <form asp-action="Update" method="post" enctype="multipart/form-data">
+        @* Validasyon hataları için *@
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+        @* KRİTİK: ID ve Eski ImageUrl mutlaka hidden olmalı *@
+        <input type="hidden" asp-for="Id" />
+        <input type="hidden" asp-for="ImageUrl" />
+
+        <div class="row">
+            <div class="col-md-8">
+                @* Başlık *@
+                <div class="form-group mb-3">
+                    <label asp-for="Title" class="control-label font-weight-bold">Banner Başlığı</label>
+                    <input asp-for="Title" class="form-control" placeholder="Başlık giriniz..." />
+                    <span asp-validation-for="Title" class="text-danger"></span>
+                </div>
+
+                @* Hedef URL *@
+                <div class="form-group mb-3">
+                    <label asp-for="TargetUrl" class="control-label font-weight-bold">Yönlendirme Linki (Target URL)</label>
+                    <input asp-for="TargetUrl" class="form-control" placeholder="https://..." />
+                    <span asp-validation-for="TargetUrl" class="text-danger"></span>
+                </div>
+
+                <div class="row">
+                    @* Sıralama *@
+                    <div class="col-md-6 form-group mb-3">
+                        <label asp-for="Order" class="control-label font-weight-bold">Görüntüleme Sırası</label>
+                        <input asp-for="Order" type="number" class="form-control" />
+                        <span asp-validation-for="Order" class="text-danger"></span>
+                    </div>
+
+                    @* Aktif mi? *@
+                    <div class="col-md-6 form-group mb-3 d-flex align-items-end">
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" asp-for="IsActive" />
+                            <label class="form-check-label font-weight-bold" asp-for="IsActive">
+                                Banner Aktif mi?
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                @* Mevcut Resim Gösterimi *@
+                <div class="form-group mb-3 text-center">
+                    <label class="control-label font-weight-bold d-block">Mevcut Görsel</label>
+                    @if (!string.IsNullOrEmpty(Model.ImageUrl))
+                    {
+                        <img src="@Model.ImageUrl" class="img-thumbnail mt-2" style="max-height: 150px;" alt="Banner Image" />
+                    }
+                    else
+                    {
+                        <div class="alert alert-secondary mt-2">Görsel Yok</div>
+                    }
+                </div>
+
+                @* Yeni Resim Seçme *@
+                <div class="form-group mb-3">
+                    <label asp-for="ImageFile" class="control-label font-weight-bold">Yeni Görsel Seç (Opsiyonel)</label>
+                    <input asp-for="ImageFile" type="file" class="form-control" accept="image/*" />
+                    <small class="text-muted">Değiştirmek istemiyorsanız boş bırakın.</small>
+                    <span asp-validation-for="ImageFile" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group mt-4">
+            <button type="submit" class="btn btn-primary px-4">Güncelle</button>
+            <a asp-action="Index" class="btn btn-secondary px-4 ml-2">İptal</a>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

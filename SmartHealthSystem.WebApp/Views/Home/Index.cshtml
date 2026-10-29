@@ -1,4 +1,136 @@
-﻿@{
-    Layout = "_Layout"; // Hazırladığımız bu iskeleti kullan diyoruz
+﻿@model SmartHealthSystem.WebApp.Models.DashboardViewModel
+
+@{
+    Layout = "_Layout";
 }
-<h1>Admin Paneline Hoş Geldiniz</h1>
+
+<div class="container-fluid">
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm overflow-hidden" style="border-radius: 24px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                <div class="card-body p-5 text-white">
+                    <h1 class="display-5 fw-bold mb-2">Hoş Geldin 👋</h1>
+                    <p class="fs-5 opacity-75">Sistem şu an stabil çalışıyor. Toplam <b>@Model.TotalPatientCount</b> kayıtlı hastanız var.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4 mb-4">
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm p-4" style="border-radius: 20px;">
+                <div class="d-flex align-items-center">
+                    <div class="bg-primary bg-opacity-10 p-3 rounded-circle me-3 text-primary">
+                        <i class="bi bi-people-fill fs-3"></i>
+                    </div>
+                    <div>
+                        <h6 class="text-muted mb-0 small">Toplam Hasta</h6>
+                        <h3 class="fw-bold mb-0">@Model.TotalPatientCount</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm p-4" style="border-radius: 20px;">
+                <div class="d-flex align-items-center">
+                    <div class="bg-success bg-opacity-10 p-3 rounded-circle me-3 text-success">
+                        <i class="bi bi-activity fs-3"></i>
+                    </div>
+                    <div>
+                        <h6 class="text-muted mb-0 small">Aktif Analizler</h6>
+                        <h3 class="fw-bold mb-0">@Model.TotalAnalysisCount</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm p-4" style="border-radius: 20px;">
+                <div class="d-flex align-items-center">
+                    <div class="bg-warning bg-opacity-10 p-3 rounded-circle me-3 text-warning">
+                        <i class="bi bi-clock-history fs-3"></i>
+                    </div>
+                    <div>
+                        <h6 class="text-muted mb-0 small">Bekleyen Sonuçlar</h6>
+                        <h3 class="fw-bold mb-0">@Model.PendingResultsCount</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm p-4" style="border-radius: 24px;">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h5 class="fw-bold mb-0">Son Kayıtlı Hastalar & Analizler</h5>
+                    <a href="#" class="text-muted text-decoration-none small fw-bold">Hepsini Gör</a>
+                </div>
+
+                <div class="list-group list-group-flush">
+                    @if (Model.RecentAnalyses != null && Model.RecentAnalyses.Any())
+                    {
+                        @foreach (var item in Model.RecentAnalyses)
+                        {
+                            <div class="list-group-item px-0 py-3 border-0 d-flex align-items-center justify-content-between border-bottom">
+                                <div class="d-flex align-items-center">
+                                    <div class="bg-light p-2 rounded-3 me-3">
+                                        <i class="bi bi-person-circle text-primary fs-5"></i>
+                                    </div>
+                                    <div>
+                                        <h6 class="mb-0 fw-bold small">@item.PatientName</h6>
+                                        <small class="text-muted">@item.AnalysisType • @item.PatientEmail</small>
+                                    </div>
+                                </div>
+                                <div class="text-end">
+                                    <span class="badge bg-success bg-opacity-10 text-success rounded-pill px-3">@item.ResultStatus</span>
+                                    <div class="text-muted" style="font-size: 10px;">@item.AnalysisDate.ToShortDateString()</div>
+                                </div>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <div class="text-center p-5">
+                            <p class="text-muted">Henüz bir kayıt bulunamadı.</p>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card border-0 shadow-sm p-4 mb-4" style="border-radius: 24px;">
+                <h5 class="fw-bold mb-4">Analiz Dağılımı</h5>
+                
+                <div class="d-flex flex-column gap-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="small"><i class="bi bi-circle-fill text-primary me-2 small"></i> Kalp Sağlığı</span>
+                        <span class="badge bg-light text-dark">@Model.Distribution.HeartAnalysisCount Adet</span>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="small"><i class="bi bi-circle-fill text-warning me-2 small"></i> Böbrek</span>
+                        <span class="badge bg-light text-dark">@Model.Distribution.KidneyAnalysisCount Adet</span>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="small"><i class="bi bi-circle-fill text-danger me-2 small"></i> Kanser</span>
+                        <span class="badge bg-light text-dark">@Model.Distribution.CancerAnalysisCount Adet</span>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="small"><i class="bi bi-circle-fill text-info me-2 small"></i> Sosyal</span>
+                        <span class="badge bg-light text-dark">@Model.Distribution.SocialActivityCount Adet</span>
+                    </div>
+                </div>
+
+                <hr class="my-4 opacity-50">
+                
+                <div class="bg-light p-3 rounded-4">
+                    <h6 class="fw-bold small mb-2 text-dark">Hızlı İşlem</h6>
+                    <p class="text-muted mb-3" style="font-size: 11px;">Hızlıca yeni bir hasta analizi başlatmak için tıklayın.</p>
+                    <button class="btn btn-primary w-100 rounded-pill py-2 shadow-sm" style="font-size: 13px;">Yeni Analiz Başlat</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,114 @@
+﻿@using System.Globalization
+@{
+    ViewData["Title"] = "Diyabet Analiz Sonucu";
+    
+    double risk = 0;
+    string riskStr = ViewBag.RiskPercentage?.ToString();
+    if (!string.IsNullOrEmpty(riskStr))
+    {
+        // Küresel nokta/virgül ayrımı için InvariantCulture kullanıyoruz
+        double.TryParse(riskStr.Replace(",", "."), NumberStyles.Any, CultureInfo.InvariantCulture, out risk);
+    }
+
+    var score = ViewBag.HealthScore?.ToString() ?? "0";
+    
+    // Önerileri split ederek diziye (Array) çeviriyoruz
+    var rawRecommendations = ViewBag.Recommendations?.ToString();
+    var recommendations = rawRecommendations?.Split('|', StringSplitOptions.RemoveEmptyEntries);
+
+    // PYTHON API İLE SINIRLARI EŞİTLEDİK (30 yerine 35 yaptık)
+    string colorClass = risk >= 70 ? "danger" : (risk >= 35 ? "warning" : "success");
+    string statusText = risk >= 70 ? "Yüksek Diyabet Riski" : (risk >= 35 ? "Risk Altında (Pre-Diyabet)" : "Düşük Risk / Sağlıklı");
+    string iconClass = risk >= 70 ? "bi-exclamation-triangle-fill" : (risk >= 35 ? "bi-activity" : "bi-check-circle-fill");
+    
+    // Öneriler kutusu için dinamik border rengi sınıfı
+    string borderClass = risk >= 70 ? "border-danger" : (risk >= 35 ? "border-warning" : "border-success");
+    string textClass = risk >= 70 ? "text-danger" : (risk >= 35 ? "text-warning" : "text-success");
+    string bgAlertClass = risk >= 70 ? "#fff9f9" : (risk >= 35 ? "#fffdf5" : "#f5fdf7");
+}
+
+<div class="container mt-5 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-lg" style="border-radius: 25px; overflow: hidden;">
+                
+                @* Üst Bilgi Paneli *@
+                <div class="bg-@colorClass p-4 text-center text-white">
+                    <i class="bi @iconClass display-4"></i>
+                    <h2 class="fw-bold mt-2">@statusText</h2>
+                </div>
+
+                <div class="card-body p-5">
+                    @* Risk Yüzdesi Göstergesi *@
+                    <div class="text-center mb-5">
+                        <h6 class="text-uppercase text-muted fw-bold mb-3">Yapay Zeka Olasılık Skoru</h6>
+                        <h1 class="display-1 fw-bold text-@colorClass" style="font-size: 5rem;">%@risk.ToString("F1")</h1>
+                        
+                        <div class="progress mt-3" style="height: 15px; border-radius: 30px;">
+                            <div class="progress-bar progress-bar-striped progress-bar-animated bg-@colorClass" 
+                                 role="progressbar" style="width: @(risk > 100 ? 100 : risk)%"></div>
+                        </div>
+                    </div>
+
+                    @* Skor Kartları *@
+                    <div class="row g-4 mb-5 text-center">
+                        <div class="col-6">
+                            <div class="p-3 border rounded-4 bg-light shadow-sm border-2 border-primary-subtle">
+                                <h4 class="fw-bold text-primary mb-0">@score / 100</h4>
+                                <small class="text-muted text-uppercase fw-bold">Genel Sağlık Skoru</small>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="p-3 border rounded-4 bg-light shadow-sm">
+                                <h4 class="fw-bold text-dark mb-0">XGBoost v1.2</h4>
+                                <small class="text-muted text-uppercase fw-bold">Analiz Modeli</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    @* Öneriler Bölümü (Renkler Dinamik Hale Getirildi) *@
+                    <div class="p-4 rounded-4" style="background-color: @bgAlertClass; border-left: 5px solid var(--bs-@colorClass);">
+                        <h5 class="fw-bold mb-4 text-dark">
+                            <i class="bi bi-chat-left-dots-fill me-2 @textClass"></i>Kişiselleştirilmiş Öneriler
+                        </h5>
+                        <ul class="list-unstyled mb-0">
+                            @if (recommendations != null && recommendations.Length > 0)
+                            {
+                                foreach (var rec in recommendations)
+                                {
+                                    <li class="mb-3 d-flex align-items-start">
+                                        <i class="bi bi-arrow-right-circle-fill @textClass me-3 mt-1"></i>
+                                        <span class="text-dark fw-medium">@rec.Trim()</span>
+                                    </li>
+                                }
+                            }
+                            else
+                            {
+                                <li class="text-muted">Analiz sonucunda spesifik bir uyarı üretilmedi.</li>
+                            }
+                        </ul>
+                    </div>
+
+                    @* Butonlar *@
+                    <div class="mt-5 d-flex gap-3 justify-content-center d-print-none">
+                        <a asp-action="Create" class="btn btn-outline-@colorClass px-4 py-2 fw-bold" style="border-radius: 12px;">
+                            <i class="bi bi-arrow-repeat me-2"></i> Yeni Analiz
+                        </a>
+                        <button onclick="window.print()" class="btn btn-dark px-4 py-2 fw-bold" style="border-radius: 12px;">
+                            <i class="bi bi-printer me-2"></i> Raporu Yazdır
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    body { background-color: #f1f5f9; }
+    .card { animation: slideUp 0.6s ease-out; }
+    @@keyframes slideUp {
+        from { opacity: 0; transform: translateY(30px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+</style>

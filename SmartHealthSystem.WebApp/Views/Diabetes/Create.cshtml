@@ -1,0 +1,151 @@
+﻿@model SmartHealthSystem.Application.Features.DiabetesTestData.Commands.CreateDiabetesTestData.CreateDiabetesTestDataCommandRequest
+
+@{
+    ViewData["Title"] = "AI Diyabet Risk Analizi";
+}
+
+<div class="container mt-5 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            
+            @* Başlık Bölümü *@
+            <div class="text-center mb-5">
+                <div class="icon-box mb-3">
+                    <i class="bi bi-droplet-half text-danger" style="font-size: 3.5rem;"></i>
+                </div>
+                <h2 class="fw-bold text-dark">Tip 2 Diyabet Risk Analizi</h2>
+                <p class="text-muted">Gelişmiş yapay zeka modelimizle diyabet riskinizi saniyeler içinde analiz edin.</p>
+            </div>
+
+            <div class="card border-0 shadow-lg" style="border-radius: 25px;">
+                <div class="card-body p-4 p-md-5">
+                    
+                    <form asp-action="Create" method="post" id="diabetesForm">
+                        @Html.AntiForgeryToken()
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-4"></div>
+
+                        @* 0. BÖLÜM: HASTA SEÇİMİ *@
+                        <div class="form-section mb-5 p-4 bg-light rounded-4 border-start border-danger border-4">
+                            <div class="d-flex align-items-center mb-3">
+                                <i class="bi bi-person-badge-fill text-danger me-2 fs-4"></i>
+                                <h5 class="mb-0 fw-bold">Analiz Edilecek Hasta</h5>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <select asp-for="PatientId" class="form-select form-select-lg custom-input shadow-sm" required>
+                                        <option value="">-- Listeden Hasta Seçiniz --</option>
+                                        @if (ViewBag.UserList != null)
+                                        {
+                                            foreach (var user in (List<SmartHealthSystem.Application.DTOs.User.GetAllUsersDto>)ViewBag.UserList)
+                                            {
+                                                <option value="@user.Id">@user.FirstName @user.LastName (@user.UserName)</option>
+                                            }
+                                        }
+                                    </select>
+                                    <span asp-validation-for="PatientId" class="text-danger small"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        @* 1. BÖLÜM: TEMEL BİLGİLER *@
+                        <div class="form-section mb-5">
+                            <h6 class="text-uppercase text-primary fw-bold mb-4 border-bottom pb-2">01. Fiziksel ve Temel Veriler</h6>
+                            <div class="row g-4">
+                                <div class="col-md-4">
+                                    <label class="form-label fw-semibold">Yaş</label>
+                                    <input asp-for="Age" type="number" class="form-control form-control-lg custom-input" placeholder="Örn: 45" />
+                                    <span asp-validation-for="Age" class="text-danger small"></span>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label fw-semibold">Cinsiyet</label>
+                                    <select asp-for="Gender" class="form-select form-select-lg custom-input">
+                                        <option value="Male">Erkek</option>
+                                        <option value="Female">Kadın</option>
+                                        <option value="Other">Diğer</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label fw-semibold">Vücut Kitle İndeksi (BMI)</label>
+                                    <input asp-for="BMI" type="number" step="0.1" class="form-control form-control-lg custom-input" placeholder="Örn: 24.5" />
+                                    <span asp-validation-for="BMI" class="text-danger small"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        @* 2. BÖLÜM: LABORATUVAR VERİLERİ *@
+                        <div class="form-section mb-5">
+                            <h6 class="text-uppercase text-danger fw-bold mb-4 border-bottom pb-2">02. Laboratuvar Değerleri</h6>
+                            <div class="row g-4">
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold">HbA1c Seviyesi (%)</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-white border-end-0 custom-input-group-icon"><i class="bi bi-percent text-danger"></i></span>
+                                        <input asp-for="HbA1cLevel" type="number" step="0.1" class="form-control form-control-lg custom-input border-start-0" placeholder="Örn: 5.7" />
+                                    </div>
+                                    <span asp-validation-for="HbA1cLevel" class="text-danger small"></span>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold">Kan Şekeri (Blood Glucose)</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-white border-end-0 custom-input-group-icon"><i class="bi bi-ev-station text-danger"></i></span>
+                                        <input asp-for="BloodGlucoseLevel" type="number" class="form-control form-control-lg custom-input border-start-0" placeholder="mg/dL" />
+                                    </div>
+                                    <span asp-validation-for="BloodGlucoseLevel" class="text-danger small"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        @* 3. BÖLÜM: ÖZGEÇMİŞ VE ALIŞKANLIKLAR *@
+                        <div class="form-section mb-5">
+                            <h6 class="text-uppercase text-success fw-bold mb-4 border-bottom pb-2">03. Sağlık Geçmişi</h6>
+                            <div class="row g-4 text-center">
+                                <div class="col-md-4">
+                                    <div class="option-card p-3 rounded-4 border">
+                                        <i class="bi bi-activity text-warning d-block mb-2 fs-3"></i>
+                                        <label class="fw-bold small d-block mb-2">Hipertansiyon</label>
+                                        <select asp-for="Hypertension" class="form-select border-0 text-center fw-bold bg-light">
+                                            <option value="0">Yok</option>
+                                            <option value="1">Var</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="option-card p-3 rounded-4 border">
+                                        <i class="bi bi-heart-pulse text-danger d-block mb-2 fs-3"></i>
+                                        <label class="fw-bold small d-block mb-2">Kalp Hastalığı</label>
+                                        <select asp-for="HeartDisease" class="form-select border-0 text-center fw-bold bg-light">
+                                            <option value="0">Yok</option>
+                                            <option value="1">Var</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="option-card p-3 rounded-4 border border-info bg-info-subtle">
+                                        <i class="bi bi-lungs text-info d-block mb-2 fs-3"></i>
+                                        <label class="fw-bold small d-block mb-2">Sigara Öyküsü</label>
+                                        <select asp-for="SmokingHistory" class="form-select border-0 text-center fw-bold bg-transparent">
+                                            <option value="never">Hiç İçmedi</option>
+                                            <option value="former">Eski İçici</option>
+                                            <option value="current">Hala İçiyor</option>
+                                            <option value="not current">Şu an İçmiyor</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-danger btn-lg px-5 py-3 shadow-lg fw-bold w-100"
+                                    style="border-radius: 15px; background: linear-gradient(135deg, #dc3545, #fd7e14); border:none;">
+                                <i class="bi bi-cpu-fill me-2"></i> YAPAY ZEKA ANALİZİNİ BAŞLAT
+                            </button>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@* Loading Modal ve Style kısımları aynı kalacak, sadece renkleri temaya uygun (danger/orange) güncelleyebilirsin *@

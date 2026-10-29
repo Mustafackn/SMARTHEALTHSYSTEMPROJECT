@@ -20,6 +20,9 @@ namespace SmartHealthSystem.Persistence.AppDbContext
         public DbSet<HeartTestData> HeartTestDatas { get; set; }
         public DbSet<KidneyTestData> KidneyTestDatas { get; set; }
         public DbSet<CancerTestData> CancerTestDatas { get; set; }
+        public DbSet<DiabetesTestData>  DiabetesTestDatas{ get; set; }
+        public DbSet<CardiovascularTestData> CardiovascularTestDatas { get; set; }
+        public DbSet<PromoBanner> PromoBanners { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);

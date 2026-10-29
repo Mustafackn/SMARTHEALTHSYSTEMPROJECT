@@ -1,0 +1,96 @@
+﻿@model SmartHealthSystem.Application.DTOs.BannerDto.CreateBannerDto
+
+@{
+    ViewData["Title"] = "Yeni Banner Ekle";
+}
+
+<div class="container mt-2">
+    @* Üst Alan: Breadcrumb ve Listele Butonu *@
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-0">
+                <li class="breadcrumb-item"><a asp-action="Index" class="text-decoration-none text-muted">Slider Yönetimi</a></li>
+                <li class="breadcrumb-item active fw-bold text-primary">Yeni Ekle</li>
+            </ol>
+        </nav>
+        
+        @* Listeleme Sayfasına Hızlı Dönüş Butonu *@
+        <a asp-action="Index" class="btn btn-outline-primary btn-sm px-3 shadow-sm" style="border-radius: 8px;">
+            <i class="bi bi-list-ul me-1"></i> Tüm Listeyi Gör
+        </a>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <div class="card border-0 shadow-sm" style="border-radius: 15px;">
+                <div class="card-header bg-white py-3 border-bottom-0">
+                    <h5 class="mb-0 fw-bold text-dark">
+                        <i class="bi bi-plus-circle-fill text-primary me-2"></i>Yeni Banner Oluştur
+                    </h5>
+                </div>
+                <div class="card-body p-4">
+                    <form asp-action="Create" method="post" enctype="multipart/form-data">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="Title" class="form-label fw-semibold">Banner Başlığı</label>
+                                <input asp-for="Title" class="form-control form-control-lg" style="font-size: 0.9rem;" placeholder="Örn: Sağlıklı Yaşam Rehberi" />
+                                <span asp-validation-for="Title" class="text-danger small"></span>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="ImageFile" class="form-label fw-semibold">Görsel Seçin</label>
+                                <input asp-for="ImageFile" type="file" class="form-control form-control-lg" style="font-size: 0.9rem;" accept="image/*" />
+                                <span asp-validation-for="ImageFile" class="text-danger small"></span>
+                                <small class="text-muted"><i class="bi bi-info-circle me-1"></i>Önerilen boyut: 1920x600px</small>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Description" class="form-label fw-semibold">Kısa Açıklama</label>
+                            <textarea asp-for="Description" class="form-control" rows="3" placeholder="Görsel üzerinde görünecek kısa metin..."></textarea>
+                            <span asp-validation-for="Description" class="text-danger small"></span>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="TargetUrl" class="form-label fw-semibold">Yönlendirilecek Sayfa (URL)</label>
+                                <input asp-for="TargetUrl" class="form-control" placeholder="/Analiz/Kalp" />
+                                <span asp-validation-for="TargetUrl" class="text-danger small"></span>
+                            </div>
+
+                            <div class="col-md-3 mb-3">
+                                <label asp-for="Order" class="form-label fw-semibold">Sıralama</label>
+                                <input asp-for="Order" type="number" class="form-control" value="1" />
+                                <span asp-validation-for="Order" class="text-danger small"></span>
+                            </div>
+
+                            <div class="col-md-3 mb-3 d-flex align-items-end">
+                                <div class="form-check mb-2">
+                                    <input asp-for="IsActive" class="form-check-input" type="checkbox" checked />
+                                    <label asp-for="IsActive" class="form-check-label fw-semibold">Aktif mi?</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <hr class="my-4 text-muted opacity-25">
+
+                        <div class="d-flex justify-content-end gap-2">
+                            <a asp-action="Index" class="btn btn-light px-4 border" style="border-radius: 10px;">Vazgeç</a>
+                            <button type="submit" class="btn btn-primary px-5 text-white shadow" style="border-radius: 10px; background: linear-gradient(90deg, #8e2de2, #4a00e0); border:none;">
+                                <i class="bi bi-check-lg me-1"></i> Kaydet ve Yayınla
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

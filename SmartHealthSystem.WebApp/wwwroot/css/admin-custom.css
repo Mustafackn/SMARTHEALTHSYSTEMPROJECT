@@ -1,209 +1,111 @@
-﻿/* Genel Ayarlar */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+﻿:root {
+    --primary-purple: #6f42c1;
+    --light-bg: #f8f9fa;
+    --sidebar-width: 280px;
+    --transition: all 0.3s ease;
 }
 
 body {
     font-family: 'Inter', sans-serif;
-    background-color: #f2edf3;
-    overflow-x: hidden;
+    background-color: var(--light-bg);
+    margin: 0;
 }
 
 #wrapper {
     display: flex;
-    width: 100%;
 }
 
-/* Sidebar: Mavi Profesyonel Tasarım */
-.sidebar {
-    width: 260px;
-    min-width: 260px;
-    min-height: 100vh;
-    background: linear-gradient(180deg, #4e73df 10%, #224abe 100%);
-    color: white;
-    box-shadow: 4px 0 10px rgba(0,0,0,0.1);
-    transition: all 0.3s;
+/* Sidebar Tasarımı */
+#sidebar {
+    width: var(--sidebar-width);
+    height: 100vh;
+    background: #fff;
+    border-right: 1px solid #eef0f2;
+    position: fixed;
+    overflow-y: auto;
 }
 
 .sidebar-brand {
-    padding: 25px;
+    padding: 30px;
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--primary-purple);
     display: flex;
     align-items: center;
-    border-bottom: 1px solid rgba(255,255,255,0.1);
 }
 
-    .sidebar-brand h3 {
-        font-size: 1.4rem;
-        font-weight: 700;
-        letter-spacing: 1px;
-    }
-
-/* Sidebar Kullanıcı Profil Kartı */
-.user-profile-sidebar {
-    padding: 20px;
-    display: flex;
-    align-items: center;
-    background: rgba(0,0,0,0.05);
+.nav-label {
+    padding: 20px 30px 10px;
+    font-size: 11px;
+    font-weight: 700;
+    color: #adb5bd;
+    letter-spacing: 1px;
 }
 
-    .user-profile-sidebar img {
-        width: 45px;
-        height: 45px;
-        border-radius: 50%;
-        border: 2px solid rgba(255,255,255,0.2);
-        margin-right: 12px;
-    }
-
-/* Menü Linkleri */
-.sidebar .nav-link {
+.nav-link {
     display: flex;
     align-items: center;
-    padding: 15px 25px;
-    color: rgba(255,255,255,0.8);
+    padding: 12px 30px;
+    color: #495057;
     text-decoration: none;
-    font-size: 0.9rem;
+    font-weight: 500;
+    transition: var(--transition);
+    margin: 4px 15px;
+    border-radius: 12px;
 }
 
-    .sidebar .nav-link i {
-        width: 30px;
-        font-size: 1.1rem;
+    .nav-link i {
+        margin-right: 15px;
+        font-size: 1.2rem;
     }
 
-    .sidebar .nav-link:hover {
-        background: rgba(255,255,255,0.1);
-        color: white;
+    .nav-link:hover, .nav-link.active {
+        background: linear-gradient(90deg, #8e2de2, #4a00e0);
+        color: #fff !important;
+        box-shadow: 0 4px 15px rgba(111, 66, 193, 0.2);
     }
 
-/* Topbar Tasarımı */
-.content-container {
-    flex-grow: 1;
-    display: flex;
-    flex-direction: column;
+/* Content Area */
+#content-wrapper {
+    margin-left: var(--sidebar-width);
+    width: calc(100% - var(--sidebar-width));
 }
 
 .topbar {
-    height: 70px;
-    background: white;
+    height: 80px;
+    background: #fff;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0 30px;
-    box-shadow: 0 2px 15px rgba(0,0,0,0.05);
+    padding: 0 40px;
+    border-bottom: 1px solid #eef0f2;
 }
 
-.search-area input {
-    border: none;
-    background: #f8f9fa;
+.search-box {
+    background: #f1f3f7;
     padding: 10px 20px;
-    border-radius: 20px;
-    width: 300px;
-    outline: none;
-}
-
-/* Topbar Sağ İkonlar ve Profil */
-.topbar-right {
+    border-radius: 50px;
     display: flex;
     align-items: center;
-    gap: 20px;
+    width: 350px;
 }
 
-    .topbar-right i {
-        color: #adb5bd;
-        font-size: 1.2rem;
-        cursor: pointer;
-        position: relative;
+    .search-box input {
+        background: transparent;
+        border: none;
+        outline: none;
+        margin-left: 10px;
+        width: 100%;
     }
 
-.badge-red {
-    position: absolute;
-    top: -5px;
-    right: -5px;
-    width: 8px;
-    height: 8px;
-    background: #fe7c96;
-    border-radius: 50%;
-    border: 1px solid white;
-}
-
-.img-profile {
-    width: 35px;
-    height: 35px;
-    border-radius: 50%;
-    border: 1px solid #eee;
-}
-/* --- Sidebar Genel Yapı Düzeltme --- */
-.sidebar {
-    width: 260px;
-    min-width: 260px;
-    min-height: 100vh;
-    background: linear-gradient(180deg, #4e73df 10%, #224abe 100%);
-    color: white;
-    transition: all 0.3s;
-    z-index: 1000;
-}
-
-.nav-item {
-    width: 100%;
-    position: relative;
-    list-style: none;
-}
-
-/* --- Dropdown (Collapse) Mekanizması --- */
-
-/* Alt menü kutusu (Çekmece açıldığında) */
-.sidebar .collapse {
-    width: auto;
-    margin: 0 15px; /* İçeriye doğru daraltarak sidebar içine hapseder */
-    background: rgba(0, 0, 0, 0.1); /* Hafif gölge vererek derinlik katar */
-    border-radius: 8px;
-    overflow: hidden;
-    transition: all 0.3s ease;
-}
-
-/* Alt menü linkleri (Tahmin Et / Listele) */
-.sidebar .collapse-item {
+.user-info {
     display: flex;
     align-items: center;
-    padding: 10px 15px;
-    color: rgba(255, 255, 255, 0.8) !important;
-    text-decoration: none;
-    font-size: 0.85rem;
-    transition: 0.2s;
+    gap: 15px;
+    font-weight: 600;
 }
 
-    .sidebar .collapse-item i {
-        width: 25px;
-        font-size: 0.9rem;
-        color: rgba(255, 255, 255, 0.5);
+    .user-info img {
+        border-radius: 50%;
+        border: 2px solid var(--primary-purple);
     }
-
-    .sidebar .collapse-item:hover {
-        background: rgba(255, 255, 255, 0.15);
-        color: white !important;
-    }
-
-/* --- Ok İşareti (Sağa/Aşağı Dönüş) --- */
-.sidebar .nav-link[data-toggle="collapse"]::after {
-    display: inline-block;
-    font-family: 'Font Awesome 5 Free';
-    font-weight: 900;
-    content: '\f107'; /* Aşağı ok */
-    margin-left: auto;
-    transition: transform 0.3s;
-}
-
-.sidebar .nav-link[data-toggle="collapse"]:not(.collapsed)::after {
-    transform: rotate(180deg); /* Menü açılınca ok yukarı döner */
-}
-
-/* Görseldeki o "İşlemler:" yazısının stilini düzeltmek için (Opsiyonel) */
-.collapse-header {
-    padding: 0.5rem 1rem;
-    margin: 0;
-    font-size: 0.7rem;
-    font-weight: 800;
-    text-transform: uppercase;
-    color: rgba(255, 255, 255, 0.4);
-}
